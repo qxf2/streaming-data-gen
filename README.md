@@ -1,5 +1,5 @@
-# StreamingDataGen
-StreamingDataGen is a versatile data streaming generator built using FastAPI. It enables users to dynamically generate streaming data of various distributions, including sine, cosine, and more. Additionally, it provides functionalities to introduce anomalies into straight-line data, allowing users to simulate real-world scenarios. (coming-up)
+# streaming-data-gen
+This project is a data streaming generator built using FastAPI. It enables users to dynamically generate streaming data of various distributions, including sine, cosine, and more. Additionally, it provides functionalities to introduce anomalies into straight-line data, allowing users to simulate real-world scenarios. (coming-up)
 
 ## Key Features
 
@@ -16,7 +16,7 @@ StreamingDataGen is a versatile data streaming generator built using FastAPI. It
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/qxf2/streamingDataGen.git
+   git clone https://github.com/qxf2/streaming-data-gen.git
    ```
 
 2. Install dependencies:
