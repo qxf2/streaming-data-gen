@@ -32,10 +32,17 @@ This project is a data streaming generator built using FastAPI. It produces stre
    ```
 
 2. Access various endpoints to request streaming data with desired parameters.
+   - `http://localhost:7000/sine`: Generates streaming data of a sine wave.
+   - `http://localhost:7000/cosine`: Generates streaming data of a cosine wave.
+   - `http://localhost:7000/sawtooth`: Generates streaming data of a sawtooth waveform.
+   - `http://localhost:7000/square`: Generates streaming data of a square wave.
+   - `http://localhost:7000/normal`: Generates streaming data with a normal distribution.
+   - `http://localhost:7000/uniform`: Generates streaming data with a uniform distribution.
+   - `http://localhost:7000/exponential`: Generates streaming data with an exponential distribution.
 
-### Examples
+## Examples
 
-#### 3.1. Example: Direct Endpoint Access
+### 3.1. Example: Direct Endpoint Access
 To consume streaming data directly from the endpoint, you can use a simple Python script like the following: 
 
 ```python
@@ -63,7 +70,7 @@ if __name__ == "__main__":
     consume_stream(stream_url)
 ```
 
-#### 3.2. Example: Access with Parameters
+### 3.2. Example: Access with Parameters
 You can also pass parameters to customize the generated data. Here's an example of how to request a sine wave with specific parameters:
 
 ```python
