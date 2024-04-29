@@ -1,13 +1,11 @@
 # streaming-data-gen
-This project is a data streaming generator built using FastAPI. It enables users to dynamically generate streaming data of various distributions, including sine, cosine, and more. Additionally, it provides functionalities to introduce anomalies into straight-line data, allowing users to simulate real-world scenarios. (coming-up)
+This project is a data streaming generator built using FastAPI. It produces streaming data of various waveforms and distributions, which can be accessed using HTTP endpoints.  
 
 ## Key Features
-
-- **FastAPI-based**: Utilizes FastAPI to provide efficient and scalable data streaming capabilities.
-- **Multiple Data Distributions**: Supports various distributions such as sine, cosine, and more for generating diverse data streams.
-- **Anomaly Introduction**: Allows users to introduce anomalies into straight-line data to simulate real-world scenarios.  - Coming up
+- **Multiple Data Distributions**: Supports various waveforms such as sine, cosine, square, sawtooth and distributions such as normal, uniform, and exponential.
 - **Customizable Parameters**: Users can fine-tune data generation parameters to suit their specific requirements.
-- **Easy Integration**: Seamlessly integrates with existing applications and workflows for testing, analysis, and experimentation.
+- **FastAPI-based**: Utilizes FastAPI to provide efficient and scalable data streaming capabilities.
+- **Easy Integration**: Can be seamlessly incorporated into existing applications and workflows via simple HTTP requests to the provided endpoints.
 
 ## Getting Started
 
