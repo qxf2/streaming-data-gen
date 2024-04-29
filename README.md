@@ -32,13 +32,13 @@ This project is a data streaming generator built using FastAPI. It produces stre
    ```
 
 2. Access various endpoints to request streaming data with desired parameters.
-   - `http://localhost:7000/sine`: Generates streaming data of a sine wave.
-   - `http://localhost:7000/cosine`: Generates streaming data of a cosine wave.
-   - `http://localhost:7000/sawtooth`: Generates streaming data of a sawtooth waveform.
-   - `http://localhost:7000/square`: Generates streaming data of a square wave.
-   - `http://localhost:7000/normal`: Generates streaming data with a normal distribution.
-   - `http://localhost:7000/uniform`: Generates streaming data with a uniform distribution.
-   - `http://localhost:7000/exponential`: Generates streaming data with an exponential distribution.
+   - `http://localhost:8000/sine`: Generates streaming data of a sine wave.
+   - `http://localhost:8000/cosine`: Generates streaming data of a cosine wave.
+   - `http://localhost:8000/sawtooth`: Generates streaming data of a sawtooth waveform.
+   - `http://localhost:8000/square`: Generates streaming data of a square wave.
+   - `http://localhost:8000/normal`: Generates streaming data with a normal distribution.
+   - `http://localhost:8000/uniform`: Generates streaming data with a uniform distribution.
+   - `http://localhost:8000/exponential`: Generates streaming data with an exponential distribution.
 
 ## Examples
 
@@ -66,7 +66,7 @@ def consume_stream(url):
         print(f"Request failed: {e}")
 
 if __name__ == "__main__":
-    stream_url = 'http://localhost:7000/sine'  #In this case, the default values for the parameters will be used
+    stream_url = 'http://localhost:8000/sine'  #In this case, the default values for the parameters will be used
     consume_stream(stream_url)
 ```
 
@@ -93,7 +93,7 @@ def consume_stream(url, amplitude, frequency, phase, sample_rate, interval):
         print(f"Request failed: {e}")
 
 if __name__ == "__main__":
-    stream_url = 'http://localhost:7000/sine'
+    stream_url = 'http://localhost:8000/sine'
     amplitude = 10
     frequency = 2
     phase = 0 
