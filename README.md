@@ -33,7 +33,9 @@ This project is a data streaming generator built using FastAPI. It produces stre
 
 2. Access various endpoints to request streaming data with desired parameters.
 
-### 3.1. Example: Direct Endpoint Access
+### Examples
+
+#### 3.1. Example: Direct Endpoint Access
 To consume streaming data directly from the endpoint, you can use a simple Python script like the following: 
 
 ```python
@@ -61,7 +63,7 @@ if __name__ == "__main__":
     consume_stream(stream_url)
 ```
 
-### 3.2. Example: Access with Parameters
+#### 3.2. Example: Access with Parameters
 You can also pass parameters to customize the generated data. Here's an example of how to request a sine wave with specific parameters:
 
 ```python
