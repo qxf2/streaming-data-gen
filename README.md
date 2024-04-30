@@ -23,7 +23,7 @@ For example:
 - http://datagen.pythonanywhere.com/sine
 - http://datagen.pythonanywhere.com/normal
 
-Customize the parameters of the requested waveform or distribution by passing query parameters in the URL.
+Customize the parameters of the requested waveform or distribution by passing query parameters in the URL. If no parameters are provided, the default parameters for each endpoint will be applied.
 
 ## Documentation
 Documentation for the API endpoints is available at <a href="http://datagen.pythonanywhere.com/docs" target="_blank">http://datagen.pythonanywhere.com/docs</a>. It has information on how to use each endpoint and the available parameters.
