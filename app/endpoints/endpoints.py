@@ -41,10 +41,13 @@ async def sine_wave(sine_model: sine.SineModel = Depends()):
     Returns:
     - StreamingResponse: A streaming response containing the generated sine wave data.
     """
-    logger.info("Generating sine wave with parameters: %s", sine_model)
-    return StreamingResponse(
-        sine.generate_sine_data(sine_model), media_type="text/event-stream"
-    )
+    try:
+        logger.info("Generating sine wave with parameters: %s", sine_model)
+        return StreamingResponse(
+            sine.generate_sine_data(sine_model), media_type="text/event-stream"
+        )
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/cosine", response_class=StreamingResponse)
@@ -65,10 +68,13 @@ async def cosine_wave(cosine_model: cosine.CosineModel = Depends()):
     Returns:
     - StreamingResponse: A streaming response containing the generated cosine wave data.
     """
-    logger.info("Generating cosine wave with parameters: %s", cosine_model)
-    return StreamingResponse(
-        cosine.generate_cosine_data(cosine_model), media_type="text/event-stream"
-    )
+    try:
+        logger.info("Generating cosine wave with parameters: %s", cosine_model)
+        return StreamingResponse(
+            cosine.generate_cosine_data(cosine_model), media_type="text/event-stream"
+        )
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/sawtooth", response_class=StreamingResponse)
@@ -88,10 +94,14 @@ async def sawtooth_wave(sawtooth_model: sawtooth.SawtoothModel = Depends()):
     Returns:
     - StreamingResponse: A streaming response containing the generated sawtooth wave data.
     """
-    logger.info("Generating sawtooth wave with parameters: %s", sawtooth_model)
-    return StreamingResponse(
-        sawtooth.generate_sawtooth_data(sawtooth_model), media_type="text/event-stream"
-    )
+    try:
+        logger.info("Generating sawtooth wave with parameters: %s", sawtooth_model)
+        return StreamingResponse(
+            sawtooth.generate_sawtooth_data(sawtooth_model),
+            media_type="text/event-stream",
+        )
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/square", response_class=StreamingResponse)
@@ -110,10 +120,13 @@ async def square_wave(square_model: square.SquareModel = Depends()):
     Returns:
     - StreamingResponse: A streaming response containing the generated square wave data.
     """
-    logger.info("Generating square wave with parameters: %s", square_model)
-    return StreamingResponse(
-        square.generate_square_data(square_model), media_type="text/event-stream"
-    )
+    try:
+        logger.info("Generating square wave with parameters: %s", square_model)
+        return StreamingResponse(
+            square.generate_square_data(square_model), media_type="text/event-stream"
+        )
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/normal", response_class=StreamingResponse)
@@ -132,10 +145,13 @@ async def normal_wave(normal_model: normal.NormalModel = Depends()):
     Returns:
     - StreamingResponse: A streaming response containing the generated normal distribution data.
     """
-    logger.info("Generating normal distribution with parameters: %s", normal_model)
-    return StreamingResponse(
-        normal.generate_normal_data(normal_model), media_type="text/event-stream"
-    )
+    try:
+        logger.info("Generating normal distribution with parameters: %s", normal_model)
+        return StreamingResponse(
+            normal.generate_normal_data(normal_model), media_type="text/event-stream"
+        )
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/uniform", response_class=StreamingResponse)
@@ -154,10 +170,15 @@ async def uniform_wave(uniform_model: uniform.UniformModel = Depends()):
     Returns:
     - StreamingResponse: A streaming response containing the generated uniform distribution data.
     """
-    logger.info("Generating uniform distribution with parameters: %s", uniform_model)
-    return StreamingResponse(
-        uniform.generate_uniform_data(uniform_model), media_type="text/event-stream"
-    )
+    try:
+        logger.info(
+            "Generating uniform distribution with parameters: %s", uniform_model
+        )
+        return StreamingResponse(
+            uniform.generate_uniform_data(uniform_model), media_type="text/event-stream"
+        )
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 @router.get("/exponential", response_class=StreamingResponse)
@@ -175,14 +196,19 @@ async def exponential_wave(exponential_model: exponential.ExponentialModel = Dep
         - interval (float): The time interval between data points in seconds.
 
     Returns:
-    - StreamingResponse: A streaming response containing the generated 
+    - StreamingResponse: A streaming response containing the generated
                         exponential distribution data.
     """
-    logger.info("Generating exponential distribution with parameters: %s", exponential_model)
-    return StreamingResponse(
-        exponential.generate_exponential_data(exponential_model),
-        media_type="text/event-stream",
-    )
+    try:
+        logger.info(
+            "Generating exponential distribution with parameters: %s", exponential_model
+        )
+        return StreamingResponse(
+            exponential.generate_exponential_data(exponential_model),
+            media_type="text/event-stream",
+        )
+    except Exception as error:
+        raise HTTPException(status_code=500, detail=str(error))
 
 
 anomaly_manager = AnomalyManager()
@@ -200,9 +226,11 @@ async def generate_anomalies(anomaly_type: str, params: RandomAnomalyParameters 
     Returns:
         StreamingResponse: A streaming response containing the generated anomalies.
     """
-    logger.info("Generating anomalies of type: %s with parameters: %s", 
-            anomaly_type, 
-            params.model_dump())
+    logger.info(
+        "Generating anomalies of type: %s with parameters: %s",
+        anomaly_type,
+        params.model_dump(),
+    )
     generator_function = anomaly_manager.apply_anomaly(
         anomaly_type, **params.model_dump()
     )
