@@ -7,42 +7,31 @@ This project is a data streaming generator built using FastAPI. It produces stre
 - **FastAPI-based**: Utilizes FastAPI to provide efficient and scalable data streaming capabilities.
 - **Easy Integration**: Can be seamlessly incorporated into existing applications and workflows via simple HTTP requests to the provided endpoints.
 
-## Getting Started
+## Usage
+The app is accessible at https://datagen.pythonanywhere.com. Users can access various endpoints to request streaming data with desired parameters. 
+The available endpoints include:
 
-### Installation
+- `/sine`: Generates a sine wave data stream.
+- `/cosine`: Generates a cosine wave data stream.
+- `/square`: Generates a square wave data stream.
+- `/sawtooth`: Generates a sawtooth wave data stream.
+- `/normal`: Generates a data stream with values sampled from a normal distribution.
+- `/uniform`: Generates a data stream with values sampled from a uniform distribution.
+- `/exponential`: Generates a data stream with values sampled from an exponential distribution.
 
-1. Clone the repository:
+## Documentation
+Documentation for the API endpoints is available at https://datagen.pythonanywhere.com/docs. Refer to the documentation to understand how to use each endpoint and the available parameters.
 
-   ```bash
-   git clone https://github.com/qxf2/streaming-data-gen.git
-   ```
+To access streaming data for a specific waveform or distribution, simply append the name of the waveform or distribution to the base URL. For example:
 
-2. Install dependencies:
+https://datagen.pythonanywhere.com/sine
+https://datagen.pythonanywhere.com/normal
 
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-### Usage
-
-1. Run the FastAPI server locally:
-
-   ```bash
-   python app/main.py
-   ```
-
-2. Access various endpoints to request streaming data with desired parameters.
-   - `http://localhost:8000/sine`: Generates streaming data of a sine wave.
-   - `http://localhost:8000/cosine`: Generates streaming data of a cosine wave.
-   - `http://localhost:8000/sawtooth`: Generates streaming data of a sawtooth waveform.
-   - `http://localhost:8000/square`: Generates streaming data of a square wave.
-   - `http://localhost:8000/normal`: Generates streaming data with a normal distribution.
-   - `http://localhost:8000/uniform`: Generates streaming data with a uniform distribution.
-   - `http://localhost:8000/exponential`: Generates streaming data with an exponential distribution.
+Customize the parameters of the requested waveform or distribution by passing query parameters in the URL.
 
 ## Examples
 
-### 3.1. Example: Direct Endpoint Access
+### 1. Example: Direct Endpoint Access
 To consume streaming data directly from the endpoint, you can use a simple Python script like the following: 
 
 ```python
@@ -66,7 +55,7 @@ def consume_stream(url):
         print(f"Request failed: {e}")
 
 if __name__ == "__main__":
-    stream_url = 'http://localhost:8000/sine'  #In this case, the default values for the parameters will be used
+    stream_url = 'http://datagen.pythonanywhere.com/sine'  #In this case, the default values for the parameters will be used
     consume_stream(stream_url)
 ```
 
@@ -93,7 +82,7 @@ def consume_stream(url, amplitude, frequency, phase, sample_rate, interval):
         print(f"Request failed: {e}")
 
 if __name__ == "__main__":
-    stream_url = 'http://localhost:8000/sine'
+    stream_url = 'http://datagen.pythonanywhere.com/sine'
     amplitude = 10
     frequency = 2
     phase = 0 
@@ -102,12 +91,33 @@ if __name__ == "__main__":
     consume_stream(stream_url, amplitude, frequency, phase, sample_rate, interval)
 ```
 
+## Setup Instructions
+To set up the project locally, follow these instructions:
+
+### Installation
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/qxf2/streaming-data-gen.git
+   ```
+
+2. Install dependencies:
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Usage
+
+1. Run the FastAPI server locally:
+
+   ```bash
+   python app/main.py
+   ```
+
+2. Access various endpoints to request streaming data with desired parameters. Eg: http://localhost:8000/sine
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgements
-
-- [FastAPI](https://fastapi.tiangolo.com/) - FastAPI framework for building APIs with Python.
-- [NumPy](https://numpy.org/) - NumPy library for numerical computing with Python.
