@@ -8,7 +8,7 @@ This project is a data streaming generator built using FastAPI. It produces stre
 - **Easy Integration**: Can be seamlessly incorporated into existing applications and workflows via simple HTTP requests to the provided endpoints.
 
 ## Usage
-The app is accessible at https://datagen.pythonanywhere.com. Users can access various endpoints to request streaming data with desired parameters. 
+The app is accessible at https://datagen.pythonanywhere.com. Append the desired endpoint to this base URL to access streaming data. 
 The available endpoints include:
 
 - `/sine`: Generates a sine wave data stream.
@@ -24,8 +24,8 @@ Documentation for the API endpoints is available at https://datagen.pythonanywhe
 
 To access streaming data for a specific waveform or distribution, simply append the name of the waveform or distribution to the base URL. For example:
 
-https://datagen.pythonanywhere.com/sine
-https://datagen.pythonanywhere.com/normal
+- https://datagen.pythonanywhere.com/sine
+- https://datagen.pythonanywhere.com/normal
 
 Customize the parameters of the requested waveform or distribution by passing query parameters in the URL.
 
