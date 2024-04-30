@@ -19,15 +19,14 @@ The available endpoints include:
 - `/uniform`: Generates a data stream with values sampled from a uniform distribution.
 - `/exponential`: Generates a data stream with values sampled from an exponential distribution.
 
-## Documentation
-Documentation for the API endpoints is available at http://datagen.pythonanywhere.com/docs. Refer to the documentation to understand how to use each endpoint and the available parameters.
-
-To access streaming data for a specific waveform or distribution, simply append the name of the waveform or distribution to the base URL. For example:
-
+For example:
 - http://datagen.pythonanywhere.com/sine
 - http://datagen.pythonanywhere.com/normal
 
 Customize the parameters of the requested waveform or distribution by passing query parameters in the URL.
+
+## Documentation
+Documentation for the API endpoints is available at <a href="http://datagen.pythonanywhere.com/docs" target="_blank">http://datagen.pythonanywhere.com/docs</a>. It has information on how to use each endpoint and the available parameters.
 
 ## Examples
 
