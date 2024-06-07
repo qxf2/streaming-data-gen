@@ -15,13 +15,11 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from app.generators import sine, cosine, square, sawtooth, normal, uniform, exponential
-from app.anomalies.anomaly_manager import AnomalyManager
-from app.models.anomaly_models import RandomAnomalyParameters
+
 
 router = APIRouter()
 
 logger = logging.getLogger(__name__)
-
 
 @router.get("/sine", response_class=StreamingResponse)
 async def sine_wave(sine_model: sine.SineModel = Depends()):
@@ -47,7 +45,7 @@ async def sine_wave(sine_model: sine.SineModel = Depends()):
             sine.generate_sine_data(sine_model), media_type="text/event-stream"
         )
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+        raise HTTPException(status_code=500, detail=str(error)) from error
 
 
 @router.get("/cosine", response_class=StreamingResponse)
@@ -74,7 +72,7 @@ async def cosine_wave(cosine_model: cosine.CosineModel = Depends()):
             cosine.generate_cosine_data(cosine_model), media_type="text/event-stream"
         )
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+        raise HTTPException(status_code=500, detail=str(error)) from error
 
 
 @router.get("/sawtooth", response_class=StreamingResponse)
@@ -101,7 +99,7 @@ async def sawtooth_wave(sawtooth_model: sawtooth.SawtoothModel = Depends()):
             media_type="text/event-stream",
         )
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+        raise HTTPException(status_code=500, detail=str(error)) from error
 
 
 @router.get("/square", response_class=StreamingResponse)
@@ -126,7 +124,7 @@ async def square_wave(square_model: square.SquareModel = Depends()):
             square.generate_square_data(square_model), media_type="text/event-stream"
         )
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+        raise HTTPException(status_code=500, detail=str(error)) from error
 
 
 @router.get("/normal", response_class=StreamingResponse)
@@ -151,7 +149,7 @@ async def normal_wave(normal_model: normal.NormalModel = Depends()):
             normal.generate_normal_data(normal_model), media_type="text/event-stream"
         )
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+        raise HTTPException(status_code=500, detail=str(error)) from error
 
 
 @router.get("/uniform", response_class=StreamingResponse)
@@ -178,7 +176,7 @@ async def uniform_wave(uniform_model: uniform.UniformModel = Depends()):
             uniform.generate_uniform_data(uniform_model), media_type="text/event-stream"
         )
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
+        raise HTTPException(status_code=500, detail=str(error)) from error
 
 
 @router.get("/exponential", response_class=StreamingResponse)
@@ -208,35 +206,5 @@ async def exponential_wave(exponential_model: exponential.ExponentialModel = Dep
             media_type="text/event-stream",
         )
     except Exception as error:
-        raise HTTPException(status_code=500, detail=str(error))
-
-
-anomaly_manager = AnomalyManager()
-
-
-@router.get("/anomaly/{anomaly_type}", response_class=StreamingResponse)
-async def generate_anomalies(anomaly_type: str, params: RandomAnomalyParameters = Depends()):
-    """
-    Generates anomalies of the specified type with the provided parameters.
-
-    Args:
-        anomaly_type (str): The type of anomalies to generate.
-        params : The parameters for generating the anomalies.
-
-    Returns:
-        StreamingResponse: A streaming response containing the generated anomalies.
-    """
-    logger.info(
-        "Generating anomalies of type: %s with parameters: %s",
-        anomaly_type,
-        params.model_dump(),
-    )
-    generator_function = anomaly_manager.apply_anomaly(
-        anomaly_type, **params.model_dump()
-    )
-    if not generator_function:
-        print(f"Generator function for {anomaly_type} could not be created.")
-        raise HTTPException(
-            status_code=400, detail=f"Invalid anomaly type: {anomaly_type}"
-        )
-    return StreamingResponse(generator_function(), media_type="text/event-stream")
+        raise HTTPException(status_code=500, detail=str(error)) from error
+    
