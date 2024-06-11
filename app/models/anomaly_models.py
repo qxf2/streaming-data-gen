@@ -18,7 +18,7 @@ class RandomAnomalyModel(BaseModel):
         description="The probability of an anomaly occurring at each data point.",
     )
     anomaly_range: float = Field(
-        default=5.0,
+        default=10.0,
         title="Anomaly Range",
         description="The range within which the anomaly values can vary.",
     )
@@ -39,7 +39,7 @@ class RandomSquareModel(BaseModel):
         description="The constant value for regular data points.",
     )
     anomaly_magnitude: float = Field(
-        default=20.0,
+        default=10.0,
         title="Anomaly Magnitude",
         description="The magnitude of the anomaly to add to the base value",
     )
@@ -120,7 +120,7 @@ class SpikeAnomalyModel(BaseModel):
         description="The constant value for regular data points.",
     )
     spike_interval: int = Field(
-        default=20.0,  # change this. it should be in seconds. 20 * 60
+        default=1200,
         title="Spike Interval",
         description="The interval in seconds at which anomaly spike should occur.",
     )

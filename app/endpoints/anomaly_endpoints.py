@@ -3,9 +3,10 @@ Module for defining FastAPI endpoints.
 
 Endpoints:
     /random: Endpoint for generating data with random anomalies
-    /random-square: Endpoint for generating data with square wave anomalies
+    /random-square: Endpoint for generating data with random square wave anomalies
     /clustered: Endpoint for generating data with clustered anomalies
     /periodic-spike: Endpoint for generating data with periodic spike anomalies
+        within 1 hour duration
     /count-per-duration: Endopint for generating data with specified 
         number of anomalies within 1 hour duration
 

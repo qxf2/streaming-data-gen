@@ -9,7 +9,8 @@ import uvicorn
 from fastapi import FastAPI, Request, status
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import PlainTextResponse
+from fastapi.responses import PlainTextResponse, FileResponse
+from fastapi.staticfiles import StaticFiles
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(base_dir)
@@ -29,6 +30,14 @@ logging.config.fileConfig(
 )
 logger = logging.getLogger(__name__)
 
+app.mount("/help", StaticFiles(directory="app/static"), name="help")
+
+@app.get("/")
+async def serve_main_page():
+    """
+    Serves the main page of the Data Stream Generator App.
+    """
+    return FileResponse("app/static/index.html")
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
