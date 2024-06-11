@@ -8,11 +8,11 @@ This project is a data streaming generator built using FastAPI. It produces stre
 - **Easy Integration**: Can be seamlessly incorporated into existing applications and workflows via simple HTTP requests to the provided endpoints.
 
 ## Usage
-The app is accessible at http://datagen.pythonanywhere.com. Append the desired endpoint to this base URL to access streaming data. 
-The available endpoints include:
+The app is accessible at http://datagen.pythonanywhere.com. The available endpoints include:
 
 **Regular Data Streams**:
-
+ Append the desired endpoint to the base_url.
+ 
 - `/sine`: Generates a sine wave data stream.
 - `/cosine`: Generates a cosine wave data stream.
 - `/square`: Generates a square wave data stream.
@@ -22,7 +22,8 @@ The available endpoints include:
 - `/exponential`: Generates a data stream with values sampled from an exponential distribution.
 
 **Anomalous Data Streams**:
-
+ Append the desired endpoint to base_url/anomalies.
+ 
 - `/random`: Generates data with random anomalies.
 - `/random-square`: Generates data with random square wave anomalies.
 - `/clustered`: Generates data with clustered anomalies.
@@ -31,7 +32,7 @@ The available endpoints include:
 
 For example:
 - http://datagen.pythonanywhere.com/sine
-- http://datagen.pythonanywhere.com/normal
+- http://datagen.pythonanywhere.com/anomalies/random
 
 Customize the parameters of the requested waveform or distribution by passing query parameters in the URL. If no parameters are provided, the default parameters for each endpoint will be applied.
 
