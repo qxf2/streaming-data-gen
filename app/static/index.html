@@ -166,6 +166,7 @@
             <h2 class="section-title">Endpoints</h2>
             <p>Below are the available endpoints. Append them to the main URL (http://datagen.pythonanywhere.com) to access each one. After the URL, customize the parameters of the requested waveform or distribution by passing query parameters in the URL. If no parameters are provided, the default parameters for each endpoint will be applied</p>
             <h3>Regular Data Streams</h3>
+            <p>Append these endpoints directly to the main URL (http://datagen.pythonanywhere.com).</p>
             <ul class="endpoint-list">
                 <li><strong>/sine:</strong> Generates a sine wave.</li>
                 <li><strong>/cosine:</strong> Generates a cosine wave.</li>
@@ -176,6 +177,7 @@
                 <li><strong>/exponential:</strong> Generates an exponential distribution.</li>
             </ul>
             <h3>Anomalous Data Streams</h3>
+            <p>Append these endpoints to the main URL followed by /anomalies (http://datagen.pythonanywhere.com/anomalies).</p>
             <ul class="endpoint-list">
                 <li><strong>/random:</strong> Generates data with random anomalies.</li>
                 <li><strong>/random-square:</strong> Generates data with random square wave anomalies.</li>
@@ -183,6 +185,11 @@
                 <li><strong>/periodic-spike:</strong> Generates data with periodic spike anomalies within a 1-hour duration.</li>
                 <li><strong>/count-per-duration:</strong> Generates data with a specified number of anomalies within a 1-hour duration.</li>
             </ul>
+            <h3>For example:</h3>
+                <ul class="endpoint-list">
+                    <li><a href="http://datagen.pythonanywhere.com/sine" target="_blank">http://datagen.pythonanywhere.com/sine</a></li>
+                    <li><a href="http://datagen.pythonanywhere.com/anomalies/random" target="_blank">http://datagen.pythonanywhere.com/anomalies/random</a></li>
+                </ul>
         </div>
 
         
