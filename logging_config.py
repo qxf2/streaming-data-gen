@@ -5,7 +5,12 @@ Logging configuration for the FastAPI Data Streaming Application.
 import logging
 import os
 
+
 def setup_logging():
+    """
+    Set up logging configuration - configures the root logger with console and file handlers,
+    sets their formatters, log levels, and adds them to the root logger.
+    """
     try:
         # Define the base directory and log file path
         base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -20,17 +25,23 @@ def setup_logging():
 
         # Create console handler with a normal formatter
         c_handler = logging.StreamHandler()
-        c_format = logging.Formatter(
-            "%(asctime)s loglevel=%(levelname)-6s logger=%(name)s %(funcName)s() L%(lineno)-4d %(message)s"
+        console_format = (
+            "%(asctime)s loglevel=%(levelname)-6s "
+            "logger=%(name)s %(funcName)s() L%(lineno)-4d "
+            "%(message)s"
         )
+        c_format = logging.Formatter(console_format)
         c_handler.setFormatter(c_format)
         c_handler.setLevel(logging.DEBUG)
 
         # Create file handler with a detailed formatter
         f_handler = logging.FileHandler(log_file_path)
-        f_format = logging.Formatter(
-            "%(asctime)s loglevel=%(levelname)-6s logger=%(name)s %(funcName)s() L%(lineno)-4d %(message)s   call_trace=%(pathname)s L%(lineno)-4d"
+        log_format = (
+            "%(asctime)s loglevel=%(levelname)-6s "
+            "logger=%(name)s %(funcName)s() L%(lineno)-4d "
+            "%(message)s   call_trace=%(pathname)s L%(lineno)-4d"
         )
+        f_format = logging.Formatter(log_format)
         f_handler.setFormatter(f_format)
         f_handler.setLevel(logging.DEBUG)
 
@@ -39,9 +50,6 @@ def setup_logging():
         logger.addHandler(f_handler)
 
         return logger
-    except Exception as e:
-        print(f"Failed to configure logging: {e}")
+    except Exception as error:
+        print(f"Failed to configure logging: {error}")
         raise
-
-# Call the setup function and get the configured logger
-logger = setup_logging()
