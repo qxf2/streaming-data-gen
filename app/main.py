@@ -17,17 +17,14 @@ sys.path.append(base_dir)
 
 from app.endpoints.endpoints import router as api_router
 from app.endpoints.anomaly_endpoints import router as anomaly_api_router
+from logging_config import setup_logging
+
+# Configure the root logger using setup_logging function
+setup_logging()
 
 # Create a FastAPI instance
 app = FastAPI()
 
-# Configure logging
-log_file_path = os.path.join(base_dir, "app.log")
-config_path = os.path.join(base_dir, "logging.conf")
-
-logging.config.fileConfig(
-    config_path, defaults={"logfilename": log_file_path}, disable_existing_loggers=True
-)
 logger = logging.getLogger(__name__)
 
 app.mount("/help", StaticFiles(directory="app/static"), name="help")

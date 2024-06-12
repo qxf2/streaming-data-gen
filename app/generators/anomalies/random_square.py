@@ -20,10 +20,6 @@ async def generate_random_square(square_model: RandomSquareModel):
         str: A string representation of a data point.
     """
 
-    logger.info(
-        "Generating data with random square wave anomalies with parameters: %s",
-        square_model,
-    )
     anomaly_countdown = random.randint(
         square_model.minimum_interval, square_model.maximum_interval
     )
