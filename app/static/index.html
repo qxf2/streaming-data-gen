@@ -1,472 +1,312 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Stream Generator App Documentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FastAPI Data Streaming App</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f8f9fa;
-            color: #2E3B4E;
-        }
-        header {
-            background-color: #2E3B4E;
-            color: #ffffff;
-            padding: 20px;
-            text-align: center;
-        }
-        header nav a {
-            color: #ffffff;
-            margin: 0 15px;
-            text-decoration: none;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h1, h2, h3, h4 {
-            color: #2E3B4E;
-        }
-
-        .features ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .features ul li {
-            position: relative;
-            background-color: #ffffff;
-            color: #2E3B4E;
-            margin: 10px 0;
-            padding: 10px 10px 10px 30px;
-            border-radius: 5px;
-        }
-        .features ul li::before {
-            content: '';
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 10px;
-            height: 10px;
-            background-color: #17A2B8;
-            border-radius: 50%;
-        }
-
-
-        .section {
-            margin-bottom: 40px;
-        }
-        .section-title {
-            border-bottom: 2px solid #6C757D;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        /* Common styles for endpoint lists */
-        .endpoint-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .endpoint-list li {
-            position: relative;
-            background-color: #ffffff;
-            color: #2E3B4E;
-            margin: 10px 0;
-            padding: 10px 10px 10px 30px;
-            border-radius: 5px;
-        }
-        .endpoint-list li::before {
-            content: '';
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 0;
-            height: 0;
-            border-top: 6px solid transparent;
-            border-bottom: 6px solid transparent;
-            border-left: 10px solid #17A2B8;
-        }
-        .endpoint {
-            background-color: #f1f3f5;
-            padding: 20px;
+        .graph {
+            width: 100%;
+            height: 400px;
             margin: 20px 0;
-            border-radius: 5px;
         }
-        .endpoint h3 {
-            background-color: #17A2B8;
-            color: #ffffff;
+        .tabs {
+            display: flex;
+            flex-direction: column;
+        }
+        .tab-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+        .tab-buttons button {
             padding: 10px;
-            border-radius: 5px 5px 0 0;
-            margin: 0 -20px 20px -20px;
+            margin: 5px;
+            cursor: pointer;
         }
-        .endpoint h4 {
-            color: #17A2B8;
+        .tab-content {
+            display: none;
         }
-        .endpoint ul {
-            list-style-type: none;
-            padding: 0;
+        .tab-content.active {
+            display: block;
         }
-        .endpoint ul li {
-            background-color: #ffffff;
-            margin: 10px 0;
-            padding: 10px;
-            border-left: 5px solid #17A2B8;
-            border-radius: 5px;
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
         }
-        footer {
-            background-color: #2E3B4E;
-            color: #ffffff;
-            text-align: center;
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
             padding: 20px;
-            margin-top: 40px;
+            border: 1px solid #888;
+            width: 80%;
         }
-        footer a {
-            color: #17A2B8;
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
             text-decoration: none;
-            margin: 0 10px;
+            cursor: pointer;
         }
     </style>
 </head>
+
 <body>
-    <header>
-        <h1>Data Stream Generator App</h1>
-        <nav>
-            <a href="#overview">Overview</a>
-            <a href="#features">Features</a>
-            <a href="#endpoints">Endpoints</a>
-            <a href="#detailed-descriptions">Detailed Descriptions</a>
-            <a href="https://github.com/qxf2/streaming-data-gen" target="_blank">GitHub Repo</a>
-        </nav>
-    </header>
-    <div class="container">
-        <div id="overview" class="section">
-            <h2 class="section-title">Overview</h2>
-            <p>Welcome to the Data Stream Generator App, a simple tool for generating continuous data streams via HTTP endpoints. It offers diverse waveforms and anomaly generation techniques, allowing you to simulate real-world scenarios for effective testing and monitoring of data patterns.</p>
+    <nav class="container-fluid">
+        <ul>
+            <li><strong>FastAPI Data Streaming App</strong></li>
+        </ul>
+        <ul>
+            <li><a href="#intro">Home</a></li>
+            <li><a href="#endpoints">Endpoints</a></li>
+            <li><a href="#tryout" role="button">Try it Out</a></li>
+        </ul>
+    </nav>
+
+    <section id="intro" style="text-align: center; margin-bottom: 2em;">
+        <hgroup>
+            <h2>Welcome to FastAPI Data Streaming App</h2>
+            <h3>Real-time data streaming and waveform generation</h3>
+        </hgroup>
+        <p>This application allows you to stream various waveforms and distributions through HTTP endpoints. Use the sections below to learn more about the available endpoints and try them out directly from this page.</p>
+        <figure>
+            <img src="intro_image_url" alt="Introduction Image" />
+            <figcaption><a href="https://github.com/qxf2/streaming-data-gen" target="_blank">GitHub Repository</a></figcaption>
+        </figure>
+    </section>
+
+    <main class="container">
+        <div class="grid">
+            <section id="endpoints">
+                <hgroup>
+                    <h2>Endpoints</h2>
+                    <h3>Available Streaming Data Endpoints</h3>
+                </hgroup>
+                <p>Explore the various endpoints provided by our application. Each endpoint allows you to stream different types of data.</p>
+                <div class="tabs">
+                    <div class="tab-buttons">
+                        <button onclick="openTab(event, 'regular-streams')">Regular Data Streams</button>
+                        <button onclick="openTab(event, 'anomalous-streams')">Anomalous Data Streams</button>
+                    </div>
+
+                    <div id="regular-streams" class="tab-content">
+                        <h3>Regular Data Streams</h3>
+                        <button onclick="openModal('sineModal')">/sine</button>
+                        <button onclick="openModal('cosineModal')">/cosine</button>
+                        <button onclick="openModal('squareModal')">/square</button>
+                        <button onclick="openModal('sawtoothModal')">/sawtooth</button>
+                        <button onclick="openModal('normalModal')">/normal</button>
+                        <button onclick="openModal('uniformModal')">/uniform</button>
+                        <button onclick="openModal('exponentialModal')">/exponential</button>
+                    </div>
+                    <div id="anomalous-streams" class="tab-content">
+                        <h3>Anomalous Data Streams</h3>
+                        <button onclick="openModal('randomModal')">/anomalies/random</button>
+                        <button onclick="openModal('randomSquareModal')">/anomalies/random-square</button>
+                        <button onclick="openModal('clusteredModal')">/anomalies/clustered</button>
+                        <button onclick="openModal('periodicSpikeModal')">/anomalies/periodic-spike</button>
+                        <button onclick="openModal('countPerDurationModal')">/anomalies/count-per-duration</button>
+                    </div>
+                    
+                </div>
+            </section>
+
+            <section id="tryout">
+                <hgroup>
+                    <h2>Try it Out</h2>
+                    <h3>Interact with the Endpoints</h3>
+                </hgroup>
+                <form id="endpointForm" class="grid">
+                    <input type="text" id="endpoint" name="endpoint" placeholder="Endpoint (e.g., /sine-wave)" aria-label="Endpoint" required />
+                    <input type="text" id="params" name="params" placeholder="Parameters (e.g., frequency=1&amplitude=1)" aria-label="Parameters" />
+                    <button type="submit">Submit</button>
+                </form>
+                <div id="streamingData" class="graph" style="overflow: auto; height: 400px; border: 1px solid #ccc; padding: 10px;">
+                    <h4>Streaming Data:</h4>
+                    <pre id="dataOutput"></pre>
+                </div>
+            </section>
+            
+            
+
         </div>
+    </main>
 
+    <footer class="container">
+        <small><a href="https://github.com/qxf2/streaming-data-gen">GitHub</a> • <a href="https://datagen.pythonanywhere.com/docs">API Docs</a></small>
+    </footer>
 
-
-        <div id="features" class="section features">
-            <h2 class="section-title">Features</h2>
+    <!-- Modal Structure -->
+    <!-- Modal Structure for Sine Wave -->
+    <div id="sineModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('sineModal')">&times;</span>
+            <h2>Sine Wave Endpoint Details</h2>
+            <p><strong>Overview:</strong> The sine wave approach generates a continuous stream of data points that follow a sinusoidal pattern. This method is useful for simulating smooth, periodic oscillations in data, commonly observed in various natural and man-made systems.</p>
+            <h3>How It Works</h3>
+            <p>Generates data points that form a sine wave, characterized by its amplitude, frequency, and phase. The amplitude determines the height of the wave, the frequency defines the number of cycles per second, and the phase sets the wave's horizontal shift. Data points are produced at a specified sample rate, with each point separated by a fixed interval.</p>
+            <h3>Key Parameters</h3>
             <ul>
-                <li><strong>Regular Data Streams:</strong> Generate continuous data based on standard mathematical functions.</li>
-                <li><strong>Anomalous Data Streams:</strong> Introduce different types of anomalies to simulate real-world irregularities.</li>
-                <li><strong>Customization:</strong> Flexible parameters to control the attributes of the generated data.</li>
-                <li><strong>Consistent Data:</strong> Ensure predictability and uniformity by initiating a new cycle with each request.</li>
+                <li><strong>amplitude (float):</strong> Default: 4.0 - The distance from the height of a peak to the center line, representing the wave's strength.</li>
+                <li><strong>frequency (float):</strong> Default: 2.0 - The number of cycles per second of the sine wave, measured in Hertz.</li>
+                <li><strong>phase (int):</strong> Default: 0 - The offset of the sine wave, in degrees, determining where the wave starts.</li>
+                <li><strong>sample_rate (int):</strong> Default: 100 - The frequency at which data points are generated, measured in samples per second.</li>
+                <li><strong>interval (float):</strong> Default: 1.0 - The time interval between each data point, controlling the generation rate.</li>
             </ul>
         </div>
+    </div>
 
-        <div id="endpoints" class="section">
-            <h2 class="section-title">Endpoints</h2>
-            <p>Below are the available endpoints. Append them to the main URL (http://datagen.pythonanywhere.com) to access each one. After the URL, customize the parameters of the requested waveform or distribution by passing query parameters in the URL. If no parameters are provided, the default parameters for each endpoint will be applied</p>
-            <h3>Regular Data Streams</h3>
-            <p>Append these endpoints directly to the main URL (http://datagen.pythonanywhere.com).</p>
-            <ul class="endpoint-list">
-                <li><strong>/sine:</strong> Generates a sine wave.</li>
-                <li><strong>/cosine:</strong> Generates a cosine wave.</li>
-                <li><strong>/sawtooth: </strong>Generates a sawtooth wave.</li>
-                <li><strong>/square:</strong> Generates a square wave.</li>
-                <li><strong>/normal:</strong> Generates a normal distribution.</li>
-                <li><strong>/uniform:</strong> Generates a uniform distribution.</li>
-                <li><strong>/exponential:</strong> Generates an exponential distribution.</li>
-            </ul>
-            <h3>Anomalous Data Streams</h3>
-            <p>Append these endpoints to the main URL followed by /anomalies (http://datagen.pythonanywhere.com/anomalies).</p>
-            <ul class="endpoint-list">
-                <li><strong>/random:</strong> Generates data with random anomalies.</li>
-                <li><strong>/random-square:</strong> Generates data with random square wave anomalies.</li>
-                <li><strong>/clustered:</strong> Generates data with clustered anomalies.</li>
-                <li><strong>/periodic-spike:</strong> Generates data with periodic spike anomalies within a 1-hour duration.</li>
-                <li><strong>/count-per-duration:</strong> Generates data with a specified number of anomalies within a 1-hour duration.</li>
-            </ul>
-            <h3>For example:</h3>
-                <ul class="endpoint-list">
-                    <li><a href="http://datagen.pythonanywhere.com/sine" target="_blank">http://datagen.pythonanywhere.com/sine</a></li>
-                    <li><a href="http://datagen.pythonanywhere.com/anomalies/random" target="_blank">http://datagen.pythonanywhere.com/anomalies/random</a></li>
-                </ul>
-        </div>
+<!-- Repeat similar structure for other modals -->
 
+
+<script>
+    document.getElementById('endpointForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        console.log("Form submitted");
+
+        const endpoint = document.getElementById('endpoint').value;
+        const params = document.getElementById('params').value;
         
-        <div id="understanding" class="section">
-            <h2 class="section-title">Understanding Data Stream Generation</h2>
-            <p>Our app offers various endpoints for generating individual waveforms and anomalies, always starting from (t = 0). By beginning each new data stream from the start of the waveform cycle, it ensures consistent and reproducible data essential for testing and analysis. This approach is also beneficial for comparing different runs and evaluating the impact of various anomalies.</p>
-        </div>
+        // Print endpoint and params values
+        console.log("Endpoint:", endpoint);
+        console.log("Parameters:", params);
 
-        <div id="detailed-descriptions" class="section">
-            <h2 class="section-title">Detailed Descriptions</h2>
-            <p>Below, is the detailed description of each endpoint, along with the parameters they accept. By default, each parameter is set to a predefined value. However, you have the flexibility to customize these parameters by passing query parameters in the URL.</p>
-            
-            <div class="endpoint">
-                <h3>/sine</h3>
-                <h4>Overview</h4>
-                <p>The sine wave approach generates a continuous stream of data points that follow a sinusoidal pattern. This method is useful for simulating smooth, periodic oscillations in data, commonly observed in various natural and man-made systems.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates data points that form a sine wave, characterized by its amplitude, frequency, and phase. The amplitude determines the height of the wave, the frequency defines the number of cycles per second, and the phase sets the wave's horizontal shift. Data points are produced at a specified sample rate, with each point separated by a fixed interval.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>amplitude</strong> (float): <em>Default: 4.0</em>
-                        <br>The distance from the height of a peak to the center line, representing the wave's strength.</li>
-                    <li><strong>frequency</strong> (float): <em>Default: 2.0</em>
-                        <br>The number of cycles per second of the sine wave, measured in Hertz.</li>
-                    <li><strong>phase</strong> (int): <em>Default: 0</em>
-                        <br>The offset of the sine wave, in degrees, determining where the wave starts.</li>
-                    <li><strong>sample_rate</strong> (int): <em>Default: 100</em>
-                        <br>The frequency at which data points are generated, measured in samples per second.</li>
-                    <li><strong>interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point, controlling the generation rate.</li>
-                </ul>
-            </div>
-            
-            <div class="endpoint">
-                <h3>/cosine</h3>
-                <h4>Overview</h4>
-                <p>The cosine wave approach generates a continuous stream of data points that follow a cosine pattern. This method is useful for simulating smooth, periodic oscillations in data, similar to sine waves but shifted in phase.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates data points that form a cosine wave, characterized by its amplitude, frequency, and phase. The amplitude determines the height of the wave, the frequency defines the number of cycles per second, and the phase sets the wave's horizontal shift. Data points are produced at a specified sample rate, with each point separated by a fixed interval.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>amplitude</strong> (float): <em>Default: 4.0</em>
-                        <br>The distance from the height of a peak to the center line, representing the wave's strength.</li>
-                    <li><strong>frequency</strong> (float): <em>Default: 2.0</em>
-                        <br>The number of cycles per second of the cosine wave, measured in Hertz.</li>
-                    <li><strong>phase</strong> (int): <em>Default: 0</em>
-                        <br>The offset of the cosine wave, in degrees, determining where the wave starts.</li>
-                    <li><strong>sample_rate</strong> (int): <em>Default: 100</em>
-                        <br>The frequency at which data points are generated, measured in samples per second.</li>
-                    <li><strong>interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point, controlling the generation rate.</li>
-                </ul>
-            </div>
-            
-            <div class="endpoint">
-                <h3>/square</h3>
-                <h4>Overview</h4>
-                <p>The square wave approach generates a continuous stream of data points that alternate between two levels, creating a rectangular waveform.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates data points that form a square wave, characterized by its frequency. The frequency determines the number of cycles per second, producing sharp transitions between high and low levels. Data points are produced at a specified sample rate, with each point separated by a fixed interval.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>frequency</strong> (float): <em>Default: 2.0</em>
-                        <br>The number of cycles per second of the square wave, measured in Hertz.</li>
-                    <li><strong>sample_rate</strong> (int): <em>Default: 100</em>
-                        <br>The frequency at which data points are generated, measured in samples per second.</li>
-                    <li><strong>interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point, controlling the generation rate.</li>
-                </ul>
-            </div>
-            
-            <div class="endpoint">
-                <h3>/sawtooth</h3>
-                <h4>Overview</h4>
-                <p>The sawtooth wave approach generates a continuous stream of data points that linearly rise and then sharply drop, creating a wave that resembles the teeth of a saw. This method is useful for simulating linear changes followed by abrupt resets.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates data points that form a sawtooth wave, characterized by a linear rise followed by a sudden drop. The frequency determines the number of cycles per second. Data points are produced at a specified sample rate, with each point separated by a fixed interval.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>amplitude</strong> (float): <em>Default: 1.0</em>
-                        <br>The distance from the height of a peak to the center line, representing the wave's peak value.</li>
-                    <li><strong>frequency</strong> (float): <em>Default: 2.0</em>
-                        <br>The number of cycles per second of the sawtooth wave, measured in Hertz.</li>
-                    <li><strong>sample_rate</strong> (int): <em>Default: 100</em>
-                        <br>The frequency at which data points are generated, measured in samples per second.</li>
-                    <li><strong>interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point, controlling the generation rate.</li>
-                </ul>
-            </div>
-            
-            <div class="endpoint">
-                <h3>/normal</h3>
-                <h4>Overview</h4>
-                <p>The normal distribution model generates a continuous stream of data points that follow a normal (Gaussian) distribution. This is useful for simulating naturally occurring phenomena and testing systems that expect normally distributed inputs.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates data points according to a normal distribution, characterized by a specific mean and standard deviation. Data points are produced at regular intervals, determined by the specified time interval.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>mean</strong> (float): <em>Default: 0</em>
-                        <br>The mean of the normal distribution, representing the central value around which data points are distributed.</li>
-                    <li><strong>std_dev</strong> (float): <em>Default: 1</em>
-                        <br>The standard deviation of the normal distribution, indicating the spread or variability of the data points around the mean.</li>
-                    <li><strong>interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point, controlling the generation rate.</li>
-                </ul>
-            </div>
-            
-            <div class="endpoint">
-                <h3>/uniform</h3>
-                <h4>Overview</h4>
-                <p>The uniform distribution model generates a continuous stream of data points that are uniformly distributed between a specified minimum and maximum value. This model is useful for simulating scenarios where every value within a range has an equal chance of occurring.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates data points according to a uniform distribution, where each value between the specified minimum and maximum is equally likely to occur. Data points are produced at regular intervals, determined by the specified time interval.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>min_val</strong> (float): <em>Default: 0</em>
-                        <br>The minimum value of the uniform distribution, representing the lower bound of the generated data points.</li>
-                    <li><strong>max_val</strong> (float): <em>Default: 1</em>
-                        <br>The maximum value of the uniform distribution, representing the upper bound of the generated data points.</li>
-                    <li><strong>interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point, controlling the generation rate.</li>
-                </ul>
-            </div>
-            
-            <div class="endpoint">
-                <h3>/exponential</h3>
-                <h4>Overview</h4>
-                <p>The exponential distribution model generates a continuous stream of data points where the time between events follows an exponential distribution. This model is useful for simulating scenarios where events occur continuously and independently at a constant average rate.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates data points according to an exponential distribution, determined by the specified scale parameter. Data points are produced at regular intervals, as defined by the time interval parameter.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>scale</strong> (float): <em>Default: 1.0</em>
-                        <br>The inverse of the rate parameter, controlling the rate at which events occur in the exponential distribution.</li>
-                    <li><strong>interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point, controlling the generation rate.</li>
-                </ul>
-            </div>
-            
+        // Construct the URL with optional parameters
+        const baseUrl = 'http://datagen.pythonanywhere.com';
+        const url = `${baseUrl}${endpoint}${params ? '?' + params : ''}`;
+        
+        // Use a CORS proxy for the request
+        // const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        // const proxiedUrl = `${proxyUrl}${url}`;
 
-            <div class="endpoint">
-                <h3>/random</h3>
-                <h4>Overview</h4>
-                <p>The Random Anomalies approach is designed to generate a stream of data where each data point has a random chance of being an anomaly.</p>
-            
-                <h4>How It Works</h4>
-                <p>Data points are generated continuously at specified intervals. Each data point typically holds a constant base value. However, at each step, there is a predefined probability that the data point will be an anomaly. When an anomaly occurs, its value is randomly determined within a specified range around the base value.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>base_value</strong> (float): <em>Default: 0.0</em>
-                        <br>This is the default value for data points when no anomaly is present. It represents the normal state of the system.</li>
-                    <li><strong>anomaly_probability</strong> (float): <em>Default: 0.1</em>
-                        <br>This parameter defines the likelihood of an anomaly occurring at any given data point. For example, a 0.1 probability means there is a 10% chance that each data point will be an anomaly.</li>
-                    <li><strong>anomaly_range</strong> (float): <em>Default: (10.0)</em>
-                        <br>This range determines how much the anomaly can deviate from the base value. Anomalies are randomly selected within this range, ensuring variability in the values.</li>
-                    <li><strong>data_interval</strong> (float): <em>Default: 1.0</em>
-                        <br>This is the time interval between consecutive data points. It controls the frequency of data generation, with a smaller interval producing data more rapidly.</li>
-                </ul>
-            </div>
-           
-            <div class="endpoint">
-                <h3>/count-per-duration</h3>
-                <h4>Overview</h4>
-                <p>The count-per-duration approach introduces a specified number of anomalies within a fixed duration of 1 hour. This can be useful for simulating scenarios where anomalies are expected to appear within regular intervals.</p>
-            
-                <h4>How It Works</h4>
-                <p>Data points are continuously generated, and within a specified duration of one hour, a predetermined number of anomalies are introduced. This method also allows for control over the range of anomaly values, providing flexibility in the magnitude of deviations from the regular data points.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>base_value</strong> (float): <em>Default: 0.0</em>
-                        <br>The base value for regular data points, representing the normal state of the data.</li>
-                    <li><strong>num_anomalies</strong> (int): <em>Default: 1</em>
-                        <br>The total number of anomalies to be introduced within the duration. </li>
-                    <li><strong>min_anomaly_range</strong> (float): <em>Default: -10.0</em>
-                        <br>The lower bound for how much an anomaly can deviate from the base value.</li>
-                    <li><strong>max_anomaly_range</strong> (float): <em>Default: 10.0</em>
-                        <br>The upper bound for how much an anomaly can deviate from the base value.</li>                        
-                    <li><strong>data_interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point. It controls the frequency of data generation.</li>
-                </ul>
-            </div>
-            
-            <div class="endpoint">
-                <h3>/periodic-spike</h3>
-                <h4>Overview</h4>
-                <p>The periodic-spike approach introduces spikes at regular intervals within a fixed duration of 1 hour. It is designed to simulate scenarios where sudden changes or spikes occur at predictable, consistent intervals.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates a continuous stream of data points, with spikes introduced at specified intervals within each hour-long cycle. For instance, introducing a spike every 20th minute within the hour. The spike values are randomly chosen within a specified range.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>base_value</strong> (float): <em>Default: 0.0</em>
-                        <br>The constant value for regular data points, representing the normal state of the data.</li>
-                    <li><strong>spike_interval</strong> (int): <em>Default: 1200</em>
-                        <br>The interval at which spikes occur, specified in seconds. This determines how frequently the spikes will appear within the duration.</li>
-                    <li><strong>min_spike_range</strong> (float): <em>Default: 5.0</em>
-                        <br>The smallest possible deviation from the base value for a spike</li>
-                    <li><strong>max_spike_range</strong> (float): <em>Default: 10.0</em>
-                        <br>The largest possible deviation from the base value for a spike.</li>
-                    <li><strong>data_interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point. It controls the frequency of data generation.</li>
-                </ul>
-            </div>
-            
+        // Print constructed URL
+        console.log("Final URL:", url);
 
-            <div class="endpoint">
-                <h3>/random-square</h3>
-                <h4>Overview</h4>
-                <p>The random-square approach generates positive or negative square wave anomalies at random intervals throughout the data stream. The anomalies occur unpredictably, both in terms of their start times and durations, creating irregular, spontaneous square waves.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates continous stream of data points, typically representing a base value. And at random intervals, a square wave anomaly is introduced by adding a specified magnitude to the base value for a random duration. The intervals between these anomalies and their durations are randomly determined, ensuring that the anomalies occur unpredictably.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>base_value</strong> (float): <em>Default: 0.0</em>
-                        <br>The constant value for regular data points, representing the normal state of the data.</li>
-                    <li><strong>anomaly_magnitude</strong> (float): <em>Default: 10.0</em>
-                        <br>The amount by which the anomaly value deviates from the base value, introducing a significant change to the data point.</li>
-                    <li><strong>minimum_interval</strong> (float): <em>Default: 50.0</em>
-                        <br>The shortest possible time between consecutive waves of anomalies.</li>
-                    <li><strong>maximum_interval</strong> (float): <em>Default: 150.0</em>
-                        <br>The longest possible time between consecutive waves of anomalies.</li>
-                    <li><strong>min_anomaly_duration</strong> (float): <em>Default: 5.0</em>
-                        <br>The shortest duration that an anomaly wave can last.</li>
-                    <li><strong>max_anomaly_duration</strong> (float): <em>Default: 10.0</em>
-                        <br>The longest duration that an anomaly wave can last.</li>
-                    <li><strong>data_interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The rate at which data points are generated. It controls the frequency of data generation.</li>
-                </ul>
-            </div>
-            
-            
+        startStreaming(url);
+    });
 
-            <div class="endpoint">
-                <h3>/clustered</h3>
-                <h4>Overview</h4>
-                <p>This approach introduces clusters of anomalies at random intervals throughout the data stream, where multiple anomalies occur in close succession. Clustered anomalies appear in groups, creating bursts of anomalous activity.</p>
-            
-                <h4>How It Works</h4>
-                <p>Generates a continuous stream of data, typically representing a base value. Anomalies occur in clusters at random intervals, with the timing and duration of each cluster randomized within specified ranges. Each anomaly within a cluster deviates from the base value by a magnitude chosen randomly within a defined range, creating varied and realistic anomaly patterns.</p>
-            
-                <h4>Key Parameters</h4>
-                <ul>
-                    <li><strong>base_value</strong> (float): <em>Default: 0.0</em>
-                        <br>The base value for regular data points, representing the normal state of the data.</li>
-                    <li><strong>anomaly_magnitude</strong> (float): <em>Default: 10.0</em>
-                        <br>The range within which each anomaly value can vary around the base value.</li>
-                    <li><strong>minimum_interval</strong> (float): <em>Default: 50.0</em>
-                        <br>The shortest possible interval between clusters of anomalies.</li>
-                    <li><strong>maximum_interval</strong> (float): <em>Default: 150.0</em>
-                        <br>The longest possible interval between clusters of anomalies.</li>
-                    <li><strong>min_anomaly_length</strong> (float): <em>Default: 5.0</em>
-                        <br>The minimum length of the anomalies in the cluster.</li>
-                    <li><strong>max_anomaly_length</strong> (float): <em>Default: 10.0</em>
-                        <br>The maximum length of the anomalies in the cluster.</li>
-                    <li><strong>data_interval</strong> (float): <em>Default: 1.0</em>
-                        <br>The time interval between each data point. It controls the frequency of data generation.</li>
-                </ul>
-            </div>      
-            
-        </div>
-                
+    function startStreaming(url) {
+        const dataOutput = document.getElementById('dataOutput');
+        dataOutput.innerHTML = '';  // Clear previous data
+
+        console.log("Starting fetch request to URL:", url);
+
+        fetch(url)
+            .then(response => {
+                console.log("Fetch response received", response);
+                if (response.ok) {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder("utf-8");
+
+                    return new ReadableStream({
+                        start(controller) {
+                            function push() {
+                                reader.read().then(({ done, value }) => {
+                                    if (done) {
+                                        console.log("Stream complete");
+                                        controller.close();
+                                        return;
+                                    }
+
+                                    // Decode the chunk and append it to the output
+                                    const decodedValue = decoder.decode(value, { stream: true });
+                                    dataOutput.innerHTML += decodedValue + "\n";
+                                    console.log("Received chunk:", decodedValue);
+                                    push();
+                                }).catch(error => {
+                                    console.error('Streaming error:', error);
+                                    dataOutput.innerHTML += `Error: ${error.message}`;
+                                });
+                            }
+
+                            push();
+                        }
+                    });
+                } else {
+                    dataOutput.innerHTML = `Failed to connect, status code: ${response.status}`;
+                    console.error('Connection failed, status code:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                dataOutput.innerHTML = `Request failed: ${error.message}`;
+            });
+    }
+</script>
+
+
+
+<script>
+    document.getElementById('endpointForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        const endpoint = document.getElementById('endpoint').value;
+        const params = document.getElementById('params').value;
+
+        // Construct the URL with optional parameters
+        const url = `https://datagen.pythonanywhere.com${endpoint}${params ? '?' + params : ''}`;
+        startStreaming(url);
+    });
+
+    function startStreaming(url) {
+        const dataOutput = document.getElementById('dataOutput');
+        dataOutput.innerHTML = '';  // Clear previous data
+
+        fetch(url)
+            .then(response => {
+                if (response.ok) {
+                    const reader = response.body.getReader();
+                    const decoder = new TextDecoder("utf-8");
+
+                    return new ReadableStream({
+                        start(controller) {
+                            function push() {
+                                reader.read().then(({ done, value }) => {
+                                    if (done) {
+                                        controller.close();
+                                        return;
+                                    }
+
+                                    // Decode the chunk and append it to the output
+                                    const decodedValue = decoder.decode(value, { stream: true });
+                                    dataOutput.innerHTML += decodedValue + "\n";
+                                    push();
+                                }).catch(error => {
+                                    console.error('Streaming error:', error);
+                                    dataOutput.innerHTML += `Error: ${error.message}`;
+                                });
+                            }
+
+                            push();
+                        }
+                    });
+                } else {
+                    dataOutput.innerHTML = `Failed to connect, status code: ${response.status}`;
+                }
+            })
+            .catch(error => {
+                dataOutput.innerHTML = `Request failed: ${error.message}`;
+            });
+    }
+</script>
+
+
+
+
+</body>
+
+</html>
