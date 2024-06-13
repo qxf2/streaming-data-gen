@@ -189,10 +189,6 @@
         // Construct the URL with optional parameters
         const baseUrl = 'http://datagen.pythonanywhere.com';
         const url = `${baseUrl}${endpoint}${params ? '?' + params : ''}`;
-        
-        // Use a CORS proxy for the request
-        // const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-        // const proxiedUrl = `${proxyUrl}${url}`;
 
         // Print constructed URL
         console.log("Final URL:", url);
@@ -258,7 +254,7 @@
         const params = document.getElementById('params').value;
 
         // Construct the URL with optional parameters
-        const url = `https://datagen.pythonanywhere.com${endpoint}${params ? '?' + params : ''}`;
+        const url = `http://datagen.pythonanywhere.com${endpoint}${params ? '?' + params : ''}`;
         startStreaming(url);
     });
 
