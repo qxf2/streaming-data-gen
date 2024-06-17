@@ -6,11 +6,12 @@ import logging
 import os
 import sys
 import uvicorn
-from fastapi import FastAPI, Request, status
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import PlainTextResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(base_dir)
@@ -25,9 +26,22 @@ setup_logging()
 # Create a FastAPI instance
 app = FastAPI()
 
+origins = [
+    "http://localhost",
+    "http://localhost:8000"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 logger = logging.getLogger(__name__)
 
-app.mount("/help", StaticFiles(directory="app/static"), name="help")
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 @app.get("/")
 async def serve_main_page():
