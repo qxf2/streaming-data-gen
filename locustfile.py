@@ -20,6 +20,7 @@ class DataGenUser(HttpUser):
                     data = json.loads(decoded_line)
                     response_time = end_time - start_time
                     print(f"Received data point: {data}, Response time: {response_time:.6f} seconds")
+                    #record custom metric
                     events.request.fire(request_type="GET", name="/sine", response_time=int(response_time * 1000), response_length=len(line))
                     response_times.append(response_time)
                     start_time = time.time()
