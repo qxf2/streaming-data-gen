@@ -6,18 +6,21 @@ import logging
 import os
 import sys
 import uvicorn
+from typing_extensions import Annotated
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi import FastAPI, Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import PlainTextResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(base_dir)
 
 from app.endpoints.endpoints import router as api_router
 from app.endpoints.anomaly_endpoints import router as anomaly_api_router
+from app.endpoints.auth_endpoint import router as auth_router
 from logging_config import setup_logging
 
 # Configure the root logger using setup_logging function
@@ -25,6 +28,8 @@ setup_logging()
 
 # Create a FastAPI instance
 app = FastAPI()
+
+
 
 origins = [
     "http://localhost",
@@ -83,6 +88,7 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 app.include_router(api_router)
 app.include_router(anomaly_api_router, prefix="/anomalies")
+app.include_router(auth_router)
 
 logger.info("Starting the Streaming Data Generator")
 

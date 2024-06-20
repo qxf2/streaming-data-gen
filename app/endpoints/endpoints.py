@@ -12,17 +12,21 @@ Endpoints:
 """
 
 import logging
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Security
 from fastapi.responses import StreamingResponse
 from app.generators import sine, cosine, square, sawtooth, normal, uniform, exponential
-
+from fastapi.security import OAuth2PasswordBearer
+from app.models.auth_model import User
+from typing import Annotated
 
 router = APIRouter()
 
 logger = logging.getLogger(__name__)
 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
 @router.get("/sine", response_class=StreamingResponse)
-async def sine_wave(sine_model: sine.SineModel = Depends()):
+async def sine_wave(sine_model: sine.SineModel = Depends(), token: str = Depends(oauth2_scheme)):
     """
     Generate a streaming sine wave.
 

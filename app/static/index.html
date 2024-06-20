@@ -61,9 +61,26 @@
                             <button class="button-fixed-width" onclick="openModal('countPerDurationModal')">/anomalies/count-per-duration</button>
                     </div>
                 </div>
-            </section>            
+            </section>
+            
+            <section id="register">
+            <hgroup>
+                <h2>Register</h2>
+                <h3>Register to start accessing the endpoints</h3>
+            </hgroup>
+                <form id="register-form" style="max-width: 400px; margin: auto;">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                    <button type="submit">Register</button>
+                </form>
+                <p id="register-message"></p>
+            </section>
         </div>
     </main>
+
+
     
     <div id="sineModal" class="modal">
         <div class="modal-content">
@@ -345,7 +362,8 @@
     <footer class="container" style="text-align: center;">
         <small>Developed by <a href="https://www.qxf2.com" target="_blank" rel="noopener noreferrer">Qxf2 Services</a></small>
     </footer>
-    
+
+    <script src="static/register.js"></script>
 
 <script>
     function openTab(event, tabName) {
@@ -363,6 +381,35 @@
     function closeModal(modalId) {
         document.getElementById(modalId).style.display = "none";
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('register-form');
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
+
+        const message = document.getElementById('register-message');
+        if (response.ok) {
+            const data = await response.json();
+            message.textContent = data.message;
+        } else {
+            const errorData = await response.json();
+            message.textContent = `Registration failed: ${errorData.detail}`;
+        }
+    });
+});
+
+
  </script>
 
 </body>
