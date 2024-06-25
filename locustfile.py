@@ -1,11 +1,18 @@
-from locust import HttpUser, task, between, events
+"""
+Module for load testing to simulate HTTP requests and record custom response times.
+"""
+
 import json
 import time
+from locust import HttpUser, task, between, events
 
 response_times = []
 
-
 class DataGenUser(HttpUser):
+    """
+    Locust user class for load testing to simulate HTTP requests and record custom response times.
+    """
+    
     host = "http://datagen.pythonanywhere.com"
     wait_time = between(1, 2)
 
@@ -15,7 +22,6 @@ class DataGenUser(HttpUser):
         Generates a sine wave data stream by making a GET request to the "/sine" endpoint and 
         processing the received lines to calculate response time and record custom metrics.
         """
-        global response_times
         with self.client.get("/sine", stream=True) as response:
             start_time = time.time()
             for line in response.iter_lines():
