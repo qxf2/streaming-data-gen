@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Streaming Data Generator</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-    <link rel="stylesheet" href="static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 
 <body>
@@ -15,6 +15,7 @@
             <li><strong>Streaming Data Generator</strong></li>
         </ul>
         <ul>
+            <li><a href="/">Home</a></li>
             <li><a href="https://github.com/qxf2/streaming-data-gen" target="_blank" rel="noopener noreferrer">GitHub</a></li>
         </ul>
     </nav>
@@ -27,15 +28,15 @@
     </section>
 
     <main class="container">
-            <section id="endpoints">
+            <section id="endpoints" style="text-align: center;">
                 <hgroup>
                     <h2>Endpoints</h2>
                     <h3>Explore the various endpoints provided by our application. </h3>
                 </hgroup>
                 <div class="tabs">
                     <div class="tab-buttons">
-                        <button onclick="openTab(event, 'regular-streams')">Regular Data Streams</button>
-                        <button onclick="openTab(event, 'anomalous-streams')">Anomalous Data Streams</button>
+                        <button class="button-fixed-width" onclick="openTab(event, 'regular-streams')">Regular Data Streams</button>
+                        <button class="button-fixed-width" onclick="openTab(event, 'anomalous-streams')">Anomalous Data Streams</button>
                     </div>
                     <div id="regular-streams" class="tab-content">
                         <br>
@@ -63,11 +64,11 @@
                 </div>
             </section>
             
-            <section id="register">
-            <hgroup>
-                <h2>Register</h2>
-                <h3>Register to start accessing the endpoints</h3>
-            </hgroup>
+            <section id="register-section" style="display: none; text-align: center;">
+                <hgroup>
+                    <h2>Sign Up</h2>
+                    <h3>Register to start accessing the endpoints</h3>
+                </hgroup>
                 <form id="register-form" style="max-width: 400px; margin: auto;">
                     <label for="username">Username:</label>
                     <input type="text" id="username" name="username" required>
@@ -76,11 +77,38 @@
                     <button type="submit">Register</button>
                 </form>
                 <p id="register-message"></p>
+                <p>Already have an account? <a href="#login-section" onclick="showSection('login-section')">Login and generate Token</a></p>
+            </section>
+        
+            <section id="login-section" style="display: none; text-align: center;">
+                <hgroup>
+                    <h2>Login</h2>
+                    <h3>Login to generate your access token</h3>
+                </hgroup>
+                <form id="login-form" style="max-width: 400px; margin: auto;">
+                    <label for="login-username">Username:</label>
+                    <input type="text" id="login-username" name="username" required>
+                    <label for="login-password">Password:</label>
+                    <input type="password" id="login-password" name="password" required>
+                    <button type="submit">Generate Token</button>
+                </form>
+                <p id="login-message"></p>
+                <p>New user? <a href="#register-section" onclick="showSection('register-section')">Sign Up</a></p>
             </section>
         </div>
     </main>
 
+    <!-- Modal for displaying the token -->
+    <div id="tokenModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('tokenModal')">&times;</span>
+            <h4>Generated Token</h4>
+            <p id="modal-token-message"></p>
+            <button id="copyTokenButton">Copy Token</button>
+        </div>
+    </div>
 
+    <div id="notification">Token copied to clipboard!</div>
     
     <div id="sineModal" class="modal">
         <div class="modal-content">
@@ -363,54 +391,9 @@
         <small>Developed by <a href="https://www.qxf2.com" target="_blank" rel="noopener noreferrer">Qxf2 Services</a></small>
     </footer>
 
-    <script src="static/register.js"></script>
-
-<script>
-    function openTab(event, tabName) {
-    const tabContents = document.getElementsByClassName('tab-content');
-    for (let i = 0; i < tabContents.length; i++) {
-        tabContents[i].classList.remove('active');
-    }
-    document.getElementById(tabName).classList.add('active');
-    }
-
-    function openModal(modalId) {
-        document.getElementById(modalId).style.display = "block";
-    }
-
-    function closeModal(modalId) {
-        document.getElementById(modalId).style.display = "none";
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('register-form');
-    form.addEventListener('submit', async function (event) {
-        event.preventDefault();
-
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
-
-        const response = await fetch('/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
-
-        const message = document.getElementById('register-message');
-        if (response.ok) {
-            const data = await response.json();
-            message.textContent = data.message;
-        } else {
-            const errorData = await response.json();
-            message.textContent = `Registration failed: ${errorData.detail}`;
-        }
-    });
-});
-
-
- </script>
-
+    <script src="/static/token.js"></script>
+    <script src="/static/login.js"></script>
+    <script src="/static/script.js"></script>
+    
 </body>
 </html>

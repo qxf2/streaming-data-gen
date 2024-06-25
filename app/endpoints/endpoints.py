@@ -12,21 +12,22 @@ Endpoints:
 """
 
 import logging
-from fastapi import APIRouter, Depends, HTTPException, Security
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from app.generators import sine, cosine, square, sawtooth, normal, uniform, exponential
-from fastapi.security import OAuth2PasswordBearer
-from app.models.auth_model import User
-from typing import Annotated
+from app.db_utils.crud import verify_token
+from app.models.auth_model import TokenData
 
 router = APIRouter()
 
 logger = logging.getLogger(__name__)
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.get("/sine", response_class=StreamingResponse)
-async def sine_wave(sine_model: sine.SineModel = Depends(), token: str = Depends(oauth2_scheme)):
+async def sine_wave(
+    sine_model: sine.SineModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
+):
     """
     Generate a streaming sine wave.
 
@@ -44,16 +45,24 @@ async def sine_wave(sine_model: sine.SineModel = Depends(), token: str = Depends
     - StreamingResponse: A streaming response containing the generated sine wave data.
     """
     try:
-        logger.info("Generating sine wave with parameters: %s", sine_model)
+        logger.info(
+            "Generating sine wave for user '%s' with parameters: %s",
+            token_data.username,
+            sine_model,
+        )
         return StreamingResponse(
             sine.generate_sine_data(sine_model), media_type="text/event-stream"
         )
     except Exception as error:
+        logger.error("An error occurred while generating sine wave: %s", error)
         raise HTTPException(status_code=500, detail=str(error)) from error
 
 
 @router.get("/cosine", response_class=StreamingResponse)
-async def cosine_wave(cosine_model: cosine.CosineModel = Depends()):
+async def cosine_wave(
+    cosine_model: cosine.CosineModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
+):
     """
     Generate a streaming cosine wave.
 
@@ -71,7 +80,11 @@ async def cosine_wave(cosine_model: cosine.CosineModel = Depends()):
     - StreamingResponse: A streaming response containing the generated cosine wave data.
     """
     try:
-        logger.info("Generating cosine wave with parameters: %s", cosine_model)
+        logger.info(
+            "Generating cosine wave for user '%s' with parameters: %s",
+            token_data.username,
+            cosine_model,
+        )
         return StreamingResponse(
             cosine.generate_cosine_data(cosine_model), media_type="text/event-stream"
         )
@@ -80,7 +93,10 @@ async def cosine_wave(cosine_model: cosine.CosineModel = Depends()):
 
 
 @router.get("/sawtooth", response_class=StreamingResponse)
-async def sawtooth_wave(sawtooth_model: sawtooth.SawtoothModel = Depends()):
+async def sawtooth_wave(
+    sawtooth_model: sawtooth.SawtoothModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
+):
     """
     Generate a streaming sawtooth wave.
 
@@ -97,7 +113,11 @@ async def sawtooth_wave(sawtooth_model: sawtooth.SawtoothModel = Depends()):
     - StreamingResponse: A streaming response containing the generated sawtooth wave data.
     """
     try:
-        logger.info("Generating sawtooth wave with parameters: %s", sawtooth_model)
+        logger.info(
+            "Generating sawtooth wave for user '%s' with parameters: %s",
+            token_data.username,
+            sawtooth_model,
+        )
         return StreamingResponse(
             sawtooth.generate_sawtooth_data(sawtooth_model),
             media_type="text/event-stream",
@@ -107,7 +127,10 @@ async def sawtooth_wave(sawtooth_model: sawtooth.SawtoothModel = Depends()):
 
 
 @router.get("/square", response_class=StreamingResponse)
-async def square_wave(square_model: square.SquareModel = Depends()):
+async def square_wave(
+    square_model: square.SquareModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
+):
     """
     Generate a streaming square wave.
 
@@ -123,7 +146,11 @@ async def square_wave(square_model: square.SquareModel = Depends()):
     - StreamingResponse: A streaming response containing the generated square wave data.
     """
     try:
-        logger.info("Generating square wave with parameters: %s", square_model)
+        logger.info(
+            "Generating square wave for user '%s' with parameters: %s",
+            token_data.username,
+            square_model,
+        )
         return StreamingResponse(
             square.generate_square_data(square_model), media_type="text/event-stream"
         )
@@ -132,7 +159,10 @@ async def square_wave(square_model: square.SquareModel = Depends()):
 
 
 @router.get("/normal", response_class=StreamingResponse)
-async def normal_wave(normal_model: normal.NormalModel = Depends()):
+async def normal_wave(
+    normal_model: normal.NormalModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
+):
     """
     Generate a streaming normal distribution.
 
@@ -148,7 +178,11 @@ async def normal_wave(normal_model: normal.NormalModel = Depends()):
     - StreamingResponse: A streaming response containing the generated normal distribution data.
     """
     try:
-        logger.info("Generating normal distribution with parameters: %s", normal_model)
+        logger.info(
+            "Generating normal distribution for user '%s' with parameters: %s",
+            token_data.username,
+            normal_model,
+        )
         return StreamingResponse(
             normal.generate_normal_data(normal_model), media_type="text/event-stream"
         )
@@ -157,7 +191,10 @@ async def normal_wave(normal_model: normal.NormalModel = Depends()):
 
 
 @router.get("/uniform", response_class=StreamingResponse)
-async def uniform_wave(uniform_model: uniform.UniformModel = Depends()):
+async def uniform_wave(
+    uniform_model: uniform.UniformModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
+):
     """
     Generate a streaming uniform distribution.
 
@@ -174,7 +211,9 @@ async def uniform_wave(uniform_model: uniform.UniformModel = Depends()):
     """
     try:
         logger.info(
-            "Generating uniform distribution with parameters: %s", uniform_model
+            "Generating uniform distribution for user '%s' with parameters: %s",
+            token_data.username,
+            uniform_model,
         )
         return StreamingResponse(
             uniform.generate_uniform_data(uniform_model), media_type="text/event-stream"
@@ -184,7 +223,10 @@ async def uniform_wave(uniform_model: uniform.UniformModel = Depends()):
 
 
 @router.get("/exponential", response_class=StreamingResponse)
-async def exponential_wave(exponential_model: exponential.ExponentialModel = Depends()):
+async def exponential_wave(
+    exponential_model: exponential.ExponentialModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
+):
     """
     Generate a streaming exponential distribution.
 
@@ -203,7 +245,9 @@ async def exponential_wave(exponential_model: exponential.ExponentialModel = Dep
     """
     try:
         logger.info(
-            "Generating exponential distribution with parameters: %s", exponential_model
+            "Generating exponential distribution for user '%s' with parameters: %s",
+            token_data.username,
+            exponential_model,
         )
         return StreamingResponse(
             exponential.generate_exponential_data(exponential_model),
@@ -211,4 +255,3 @@ async def exponential_wave(exponential_model: exponential.ExponentialModel = Dep
         )
     except Exception as error:
         raise HTTPException(status_code=500, detail=str(error)) from error
-    

@@ -1,123 +1,115 @@
-import jwt
-from datetime import datetime, timedelta, timezone
+"""
+Module for defining FastAPI endpoints for user authentication and token generation.
+
+Endpoints:
+    /register: Endpoint for registering a new user.
+    /token: Endpoint for logging in a user and generating a token.
+"""
+
+from datetime import timedelta
+import logging
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import HTMLResponse, JSONResponse
-from app.models.auth_model import User, UserInDB, Token, TokenData, RegisterRequest
-from typing import Annotated, Union
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from passlib.context import CryptContext
-from jwt.exceptions import InvalidTokenError
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
 
-router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+from app.db_utils import crud
+from app.db_utils.database import SessionLocal
+from app.db_utils import schemas
+from app.models.auth_model import Token
+from app.db_utils.crud import verify_password, create_access_token
 
 
-SECRET_KEY = "de00b764cd45a84fbfa16dbddcf0ca97"
-ALGORITHM = "HS256"
+logger = logging.getLogger(__name__)
+
 ACCESS_TOKEN_EXPIRY = 3600
 
-users_db = {
-    "SravantiTatiraju": {
-        "username": "SravantiTatiraju",
-        "full_name": "Sravanti Tatiraju",
-        "email": "sravanti.tatiraju@gmailcom",
-        "hashed_password": "$2b$12$gkA2aCvqCwDouwUsS5Xgd.6ylvRFT/e97FsjplIsebhrTFcWN5hq6",
-        "disabled": False,
-    },
-}
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-def authenticate_user(users_db, username: str, password: str):
-    user = get_user(users_db, username)
-    if not user:
-        return False
-    if not verify_password(password, user.hashed_password):
-        return False
-    return user
-
-def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=3600)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+router = APIRouter()
 
 
-def get_user(users_db, username: str):
-    if username in users_db:
-        user_dict = users_db[username]
-        return UserInDB(**user_dict)
+# Dependancy
+def get_db():
+    """
+    Generator function that yields a SQLAlchemy SessionLocal instance.
 
-
-async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
+    Yields:
+        SessionLocal: A database session object that can be used within a context manager.
+    """
+    db = SessionLocal()
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except InvalidTokenError:
-        raise credentials_exception
-    user = get_user(users_db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
+        yield db
+    finally:
+        db.close()
 
 
-async def get_current_active_user(current_user: Annotated[User, Depends(get_current_user)]):
-    if current_user.disabled:
-        raise HTTPException(status_code=400, detail="Inactive user")
-    return current_user
+@router.post("/register", response_model=schemas.User)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    """
+    Endpoint to creates a new user.
+
+    Parameters:
+        user (schemas.UserCreate): The user data including username and password
+        db (Session, optional): The database session. Defaults to the result of `get_db()`.
+
+    Returns:
+        schemas.User : The newly created user object from the database.
+    """
+    db_user = crud.get_user_by_username(db, username=user.username)
+    if db_user:
+        raise HTTPException(status_code=400, detail="User already registered")
+    new_user = crud.create_user(db=db, user=user)
+    return new_user
+
+
+def authenticate_user(username: str, password: str, db: Session):
+    """
+    Authenticates a user based on the provided username and password.
+
+    Parameters:
+        username (str): The username of the user to authenticate.
+        password (str): The password of the user to authenticate.
+        db (Session): The database session to query user information.
+
+    Returns:
+        db_user: The authenticated user if successful, False otherwise.
+    """
+    db_user = crud.get_user_by_username(db, username=username)
+    if not db_user:
+        logger.debug("No user found with username: %s", username)
+        return False
+    if not verify_password(password, db_user.hashed_password):
+        logger.debug("Password verification failed for user: %s", username)
+        return False
+    logger.debug("User %s authenticated successfully", username)
+    return db_user
 
 
 @router.post("/token")
 async def login_for_access_token(
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Session = Depends(get_db),
 ) -> Token:
-    user = authenticate_user(users_db, form_data.username, form_data.password)
+    """
+    Endpoint for logging in a user and generating an access token.
+
+    Args:
+        form_data (OAuth2PasswordRequestForm): The form data containing the username and password.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        Token: The access token with the username as the subject.
+    """
+    user = authenticate_user(form_data.username, form_data.password, db)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    logger.debug("Login successful for username: %s", form_data.username)
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRY)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return Token(access_token=access_token, token_type="bearer")
-
-@router.post("/register", response_class=JSONResponse)
-async def register_user(register_request: RegisterRequest):
-    username = register_request.username
-    password = register_request.password
-    
-    if username in users_db:
-        raise HTTPException(status_code=400, detail="Username already registered")
-    hashed_password = get_password_hash(password)
-    users_db[username] = {
-        "username": username,
-        "hashed_password": hashed_password,
-        "disabled": False,
-    }
-    return {"message": "User registered successfully"}
-
-
-@router.get("/users/me")
-async def read_users_me(current_user: Annotated[User, Depends(get_current_active_user)]):
-    return current_user

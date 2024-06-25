@@ -1,5 +1,5 @@
 """
-Module for defining FastAPI endpoints.
+Module for defining FastAPI endpoints that generates data with anomalies.
 
 Endpoints:
     /random: Endpoint for generating data with random anomalies
@@ -22,6 +22,8 @@ from app.generators.anomalies import (
     random_anomaly,
     random_square,
 )
+from app.db_utils.crud import verify_token
+from app.models.auth_model import TokenData
 
 router = APIRouter()
 
@@ -31,6 +33,7 @@ logger = logging.getLogger(__name__)
 @router.get("/random", response_class=StreamingResponse)
 async def generate_random_anomaly(
     random_anomaly_model: random_anomaly.RandomAnomalyModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
 ):
     """
     Generate streaming data with random anomalies.
@@ -49,7 +52,8 @@ async def generate_random_anomaly(
     """
     try:
         logger.info(
-            "Generating data with random anomalies with parameters: %s",
+            "Generating data with random anomalies for user '%s' with parameters: %s",
+            token_data.username,
             random_anomaly_model,
         )
         return StreamingResponse(
@@ -63,6 +67,7 @@ async def generate_random_anomaly(
 @router.get("/random-square", response_class=StreamingResponse)
 async def random_square_anomaly(
     pos_square: random_square.RandomSquareModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
 ):
     """
     Generate streaming data with random square wave anomalies.
@@ -82,7 +87,8 @@ async def random_square_anomaly(
     """
     try:
         logger.info(
-            "Generating data with random square wave anomalies with parameters: %s",
+            "Generating data with random square wave anomalies for user '%s' with parameters: %s",
+            token_data.username,
             pos_square,
         )
         return StreamingResponse(
@@ -96,6 +102,7 @@ async def random_square_anomaly(
 @router.get("/clustered", response_class=StreamingResponse)
 async def generate_clustered_anomaly(
     clustered_anomaly: clustered.ClusteredAnomalyModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
 ):
     """
     Generate streaming data with clustered anomalies.
@@ -117,7 +124,8 @@ async def generate_clustered_anomaly(
     """
     try:
         logger.info(
-            "Generating data with clustered anomalies with parameters: %s",
+            "Generating data with clustered anomalies for user '%s' with parameters: %s",
+            token_data.username,
             clustered_anomaly,
         )
         return StreamingResponse(
@@ -129,7 +137,10 @@ async def generate_clustered_anomaly(
 
 
 @router.get("/periodic-spike", response_class=StreamingResponse)
-async def generate_spike_anomaly(spike_anomaly: periodic_spike.SpikeAnomalyModel = Depends()):
+async def generate_spike_anomaly(
+    spike_anomaly: periodic_spike.SpikeAnomalyModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
+):
     """
     Generate streaming data with regular spikes occurring at
     specified interval within a duration of 1 hour.
@@ -148,7 +159,8 @@ async def generate_spike_anomaly(spike_anomaly: periodic_spike.SpikeAnomalyModel
     """
     try:
         logger.info(
-            "Generating data with periodic spike anomalies with parameters: %s",
+            "Generating data with periodic spike anomalies for user '%s' with parameters: %s",
+            token_data.username,
             spike_anomaly,
         )
         return StreamingResponse(
@@ -162,6 +174,7 @@ async def generate_spike_anomaly(spike_anomaly: periodic_spike.SpikeAnomalyModel
 @router.get("/count-per-duration", response_class=StreamingResponse)
 async def count_per_duration(
     count_based: count_duration.CountBasedAnomalyModel = Depends(),
+    token_data: TokenData = Depends(verify_token),
 ):
     """
     Generate streaming data with specified number of anomalies within a duration of 1 hour.
@@ -180,7 +193,8 @@ async def count_per_duration(
     """
     try:
         logger.info(
-            "Generating data with count based anomalies with parameters: %s",
+            "Generating data with count based anomalies for user '%s' with parameters: %s",
+            token_data.username,
             count_based,
         )
         return StreamingResponse(

@@ -6,3 +6,6 @@ pyjwt
 passlib[bcrypt]
 python-multipart
 sqlalchemy
+httpx
+pytest
+bcrypt
