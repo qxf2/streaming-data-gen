@@ -2,6 +2,7 @@
 This module provides utility functions for user authentication and token management.
 """
 
+import os
 from datetime import datetime, timedelta, timezone
 import logging
 from typing import Union
@@ -22,8 +23,9 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
+# To generate SECRET_KEY run: openssl rand -hex 32
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-SECRET_KEY = "de00b764cd45a84fbfa16dbddcf0ca97"
 ALGORITHM = "HS256"
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

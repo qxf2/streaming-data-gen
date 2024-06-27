@@ -23,12 +23,11 @@ from app.db_utils.crud import verify_password, create_access_token
 
 logger = logging.getLogger(__name__)
 
-ACCESS_TOKEN_EXPIRY = 3600
+ACCESS_TOKEN_EXPIRY = 7
 
 router = APIRouter()
 
 
-# Dependancy
 def get_db():
     """
     Generator function that yields a SQLAlchemy SessionLocal instance.
@@ -108,7 +107,7 @@ async def login_for_access_token(
             headers={"WWW-Authenticate": "Bearer"},
         )
     logger.debug("Login successful for username: %s", form_data.username)
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRY)
+    access_token_expires = timedelta(days=ACCESS_TOKEN_EXPIRY)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )

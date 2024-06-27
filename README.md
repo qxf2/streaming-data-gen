@@ -6,6 +6,7 @@ This project is a data streaming generator built using FastAPI. It produces stre
 - **Customizable Parameters**: Users can fine-tune data generation parameters to suit their specific requirements.
 - **FastAPI-based**: Utilizes FastAPI to provide efficient and scalable data streaming capabilities.
 - **Easy Integration**: Can be seamlessly incorporated into existing applications and workflows via simple HTTP requests to the provided endpoints.
+- **Authentication**: Requires bearer token authentication for accessing the endpoints.
 
 ## Usage
 The app is accessible at http://datagen.pythonanywhere.com. The available endpoints include:
@@ -34,10 +35,38 @@ For example:
 - http://datagen.pythonanywhere.com/sine
 - http://datagen.pythonanywhere.com/anomalies/random
 
+To access these endpoints, provide a valid bearer token in the request headers.
+
 Customize the parameters of the requested waveform or distribution by passing query parameters in the URL. If no parameters are provided, the default parameters for each endpoint will be applied.
 
 ## Documentation
-Documentation for the API endpoints is available at <a href="http://datagen.pythonanywhere.com/docs" target="_blank">http://datagen.pythonanywhere.com/docs</a>. It has information on how to use each endpoint and the available parameters.
+Documentation for the API endpoints is available at <a href="http://datagen.pythonanywhere.com" target="_blank">http://datagen.pythonanywhere.com/ /a>. It has information on how to use each endpoint and the available parameters.
+
+## Obtaining Bearer Token
+To obtain a bearer token for accessing these endpoints, follow these steps:
+
+1. **Register**:
+   - Navigate to the registration section at http://datagen.pythonanywhere.com/#register-section.
+   - Enter your desired username and password and submit to register with our application.
+   
+2. **Login**:
+   - Go to the login section at http://datagen.pythonanywhere.com/#login-section.
+   - Enter your registered username and password to log in.
+
+3. **Use the Token**:
+   - After successful login, copy the generated bearer token provided.
+   - Include the token in the Authorization header of your HTTP requests to access the streaming endpoints.
+
+Alternatively, you can use curl commands to register and obtain the token:
+
+```bash
+curl -X POST http://datagen.pythonanywhere.com/register -H "Content-Type: application/json" -d '{"username": "youruser", "password": "yourpassword"}'
+
+curl -X POST http://datagen.pythonanywhere.com/token -H "Content-Type: application/x-www-form-urlencoded" -d "username=youruser&password=yourpassword"
+
+curl -X GET http://datagen.pythonanywhere.com/sine -H "Authorization: Bearer YOUR_TOKEN_HERE"
+
+```
 
 ## Examples
 
@@ -50,7 +79,8 @@ import json
 
 def consume_stream(url):
     try:
-        response = requests.get(url, stream=True)
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.get(url, headers=headers, stream=True)
         print(f"Connected to {url}")
         if response.status_code == 200:
             for line in response.iter_lines():
@@ -65,7 +95,7 @@ def consume_stream(url):
         print(f"Request failed: {e}")
 
 if __name__ == "__main__":
-    stream_url = 'http://datagen.pythonanywhere.com/sine'  #In this case, the default values for the parameters will be used
+    stream_url = 'http://datagen.pythonanywhere.com/sine'   #In this case, the default values for the parameters will be used
     consume_stream(stream_url)
 ```
 
@@ -78,7 +108,8 @@ import requests
 def consume_stream(url, amplitude, frequency, phase, sample_rate, interval):
     try:
         url = f"{url}?amplitude={amplitude}&frequency={frequency}&phase={phase}&sample_rate={sample_rate}&interval={interval}"
-        response = requests.get(url, stream=True)
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.get(url, headers=headers, stream=True)
         print(f"Connected to {url}")       
         if response.status_code == 200:
             for line in response.iter_lines():
@@ -118,6 +149,26 @@ To set up the project locally, follow these instructions:
    pip install -r requirements.txt
    ```
 
+### Configuration
+
+1. Generate 'SECRET_KEY'
+   
+   This is essential for cryptograhic signing within the application. To generate the key, run the following command in your terminal:
+
+   ```bash
+   openssl rand -hex 32
+   ```
+
+2. Set 'SECRET_KEY' as Environment Variable.
+   * Create a '.env' file in the project root
+   
+   * Add the following line to '.env' replaceing 'your_secret_key_value_here' with the generated 'SECRET_KEY'"
+
+   ```bash
+   SECRET_KEY=your_secret_key_value_here
+   ```
+   * Ensure '.emv' is listed in your '.gitignore' file to prevent it from being committed to version control.
+
 ### Usage
 
 1. Run the FastAPI server locally:
@@ -126,7 +177,7 @@ To set up the project locally, follow these instructions:
    python app/main.py
    ```
 
-2. Access various endpoints to request streaming data with desired parameters. Eg: http://localhost:8000/sine
+2. Access the application at 'http://localhost:8000'.
 
 ## License
 

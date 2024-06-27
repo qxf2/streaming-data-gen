@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const loginForm = document.getElementById('login-form');
     const loginMessage = document.getElementById('login-message');
     const modalTokenMessage = document.getElementById('modal-token-message');
+    const modalTokenExpiry = document.getElementById('modal-token-expiry');
     const copyTokenButton = document.getElementById('copyTokenButton');
 
     loginForm.addEventListener('submit', async function (event) {
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (response.ok) {
                 const data = await response.json();
                 modalTokenMessage.textContent = `${data.access_token}`;
+                modalTokenExpiry.textContent = `Token expires in 7 days.`;
                 console.log('Token generated:', data.access_token);
                 openModal('tokenModal');
                 loginForm.reset();

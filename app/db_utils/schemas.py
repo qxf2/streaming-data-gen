@@ -32,14 +32,11 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     """
-    Complete user model with ID.
+    Complete user model.
 
     Attributes:
-        username (str): The username of the user.
-        id (int): The unique identifier of the user.
+    username (str): The username of the user.
     """
-
-    id: int
 
     class Config:
         """

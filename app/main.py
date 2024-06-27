@@ -30,6 +30,8 @@ from app.endpoints.anomaly_endpoints import router as anomaly_api_router
 from app.endpoints.auth_endpoint import router as auth_router
 from logging_config import setup_logging
 
+from app.db_utils.database import Base, engine
+
 # Configure the root logger using setup_logging function
 setup_logging()
 
@@ -94,6 +96,8 @@ async def general_exception_handler(request: Request, exc: Exception):
 app.include_router(api_router)
 app.include_router(anomaly_api_router, prefix="/anomalies")
 app.include_router(auth_router)
+
+Base.metadata.create_all(bind=engine)
 
 logger.info("Starting the Streaming Data Generator")
 
