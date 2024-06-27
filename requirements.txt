@@ -9,3 +9,4 @@ sqlalchemy
 httpx
 pytest
 bcrypt
+apitally[fastapi]
