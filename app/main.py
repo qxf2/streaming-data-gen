@@ -6,6 +6,7 @@ import sys
 import logging
 
 import uvicorn
+from apitally.fastapi import ApitallyMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi import (
     FastAPI,
@@ -47,6 +48,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Add Apitally middleware
+apitally_client_id = os.environ.get('APITALLY_CLIENT_ID')
+if apitally_client_id:
+    app.add_middleware(ApitallyMiddleware,
+                       client_id=apitally_client_id,
+                       env="prod")
 
 logger = logging.getLogger(__name__)
 
