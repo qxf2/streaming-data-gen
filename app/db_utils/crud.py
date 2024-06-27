@@ -3,6 +3,7 @@ This module provides utility functions for user authentication and token managem
 """
 
 import os
+from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 import logging
 from typing import Union
@@ -22,6 +23,8 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+load_dotenv()
 
 # To generate SECRET_KEY run: openssl rand -hex 32
 SECRET_KEY = os.getenv("SECRET_KEY")
