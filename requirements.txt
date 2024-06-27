@@ -2,3 +2,10 @@ fastapi
 uvicorn[standard]
 numpy
 scipy
+pyjwt
+passlib[bcrypt]
+python-multipart
+sqlalchemy
+httpx
+pytest
+bcrypt
