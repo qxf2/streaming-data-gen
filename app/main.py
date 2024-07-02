@@ -1,24 +1,37 @@
 """
 Main module for the Streaming Data Generator application.
 """
-
-import logging
 import os
 import sys
+import logging
+
 import uvicorn
+from apitally.fastapi import ApitallyMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from fastapi import FastAPI, Request, status
+from fastapi import (
+    FastAPI,
+    Request,
+    status,
+)
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import PlainTextResponse, FileResponse
+from fastapi.responses import (
+    FileResponse,
+    JSONResponse,
+)
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.encoders import jsonable_encoder
 
+# Import from local modules
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(base_dir)
 
 from app.endpoints.endpoints import router as api_router
 from app.endpoints.anomaly_endpoints import router as anomaly_api_router
+from app.endpoints.auth_endpoint import router as auth_router
 from logging_config import setup_logging
+
+from app.db_utils.database import Base, engine
 
 # Configure the root logger using setup_logging function
 setup_logging()
@@ -26,10 +39,7 @@ setup_logging()
 # Create a FastAPI instance
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "http://localhost:8000"
-]
+origins = ["http://localhost", "http://localhost:8000"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,9 +49,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add Apitally middleware
+apitally_client_id = os.environ.get('APITALLY_CLIENT_ID')
+if apitally_client_id:
+    app.add_middleware(ApitallyMiddleware,
+                       client_id=apitally_client_id,
+                       env="prod")
+
 logger = logging.getLogger(__name__)
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 
 @app.get("/")
 async def serve_main_page():
@@ -55,10 +73,10 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     """
     Handle exceptions related to request validation errors.
     """
-    errors = "\n".join([f"{e['loc'][1]}: {e['msg']}" for e in exc.errors()])
-    return PlainTextResponse(
+    logger.error("Validation error occurred: %s", exc.errors())
+    return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content=f"Validation error:\n{errors}",
+        content=jsonable_encoder({"detail": exc.errors()}),
     )
 
 @app.exception_handler(StarletteHTTPException)
@@ -66,9 +84,10 @@ async def http_exception_handler(request: Request, exc: StarletteHTTPException):
     """
     Handle exceptions related to HTTP errors.
     """
-    return PlainTextResponse(
+    logger.error("HTTP error occurred: %s", {exc.detail})
+    return JSONResponse(
         status_code=exc.status_code,
-        content=f"HTTP error: {exc.detail}",
+        content=jsonable_encoder({"detail": exc.detail}),
     )
 
 @app.exception_handler(Exception)
@@ -76,13 +95,17 @@ async def general_exception_handler(request: Request, exc: Exception):
     """
     Handle all other excetions that are not explicitly handled by other exception handlers.
     """
-    return PlainTextResponse(
+    logger.error("An exception occurred: %s", exc)
+    return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content="An internal server error occurred.",
+        content=jsonable_encoder({"detail": "Internal server error"}),
     )
 
 app.include_router(api_router)
 app.include_router(anomaly_api_router, prefix="/anomalies")
+app.include_router(auth_router)
+
+Base.metadata.create_all(bind=engine)
 
 logger.info("Starting the Streaming Data Generator")
 
