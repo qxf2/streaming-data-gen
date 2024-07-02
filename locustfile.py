@@ -15,6 +15,7 @@ class DataGenUser(HttpUser):
     
     host = "http://datagen.pythonanywhere.com"
     wait_time = between(1, 2)
+    bearer_token = "YOUR_BEARER_TOKEN_HERE"
 
     @task
     def get_sine(self):
@@ -22,7 +23,10 @@ class DataGenUser(HttpUser):
         Generates a sine wave data stream by making a GET request to the "/sine" endpoint and 
         processing the received lines to calculate response time and record custom metrics.
         """
-        with self.client.get("/sine", stream=True) as response:
+        headers = {
+            "Authorization": f"Bearer {self.bearer_token}",
+        }
+        with self.client.get("/sine", headers=headers,stream=True) as response:
             start_time = time.time()
             for line in response.iter_lines():
                 if line:
