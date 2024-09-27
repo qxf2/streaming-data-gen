@@ -1,5 +1,7 @@
 # streaming-data-gen
-This project is a data streaming generator built using FastAPI. It produces streaming data of various waveforms and distributions, which can be accessed using HTTP endpoints.  
+This project is a data streaming generator built using FastAPI. It produces streaming data of various waveforms and distributions, which can be accessed using HTTP endpoints. 
+
+This project has been designed, developed and maintained by [Qxf2 Services](https://qxf2.com/?utm_source=github&utm_medium=click&utm_campaign=Streaming%20datagen). Qxf2 provides flexible and custom QA services to startups and early-stage products.
 
 ## Key Features
 - **Multiple Data Distributions**: Supports various waveforms such as sine, cosine, square, sawtooth and distributions such as normal, uniform, and exponential.
@@ -40,7 +42,7 @@ To access these endpoints, provide a valid bearer token in the request headers.
 Customize the parameters of the requested waveform or distribution by passing query parameters in the URL. If no parameters are provided, the default parameters for each endpoint will be applied.
 
 ## Documentation
-Documentation for the API endpoints is available at <a href="http://datagen.pythonanywhere.com" target="_blank">http://datagen.pythonanywhere.com/ /a>. It has information on how to use each endpoint and the available parameters.
+Documentation for the API endpoints is available at <a href="http://datagen.pythonanywhere.com" target="_blank">http://datagen.pythonanywhere.com/ </a>. It has information on how to use each endpoint and the available parameters.
 
 ## Obtaining Bearer Token
 To obtain a bearer token for accessing these endpoints, follow these steps:
@@ -182,3 +184,6 @@ To set up the project locally, follow these instructions:
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Qxf2 Services - custom testing services for startups
+This application is an off-shoot of some technical testing that [Qxf2](https://qxf2.com/?utm_source=github&utm_medium=click&utm_campaign=Streaming%20datagen) performed at a client. **Qxf2 provides flexible QA services for startups and early-stage products**. We frequently support employ advanced testing techniques and develop QA tools to test what matters to our clients. Our vast experience with early-stage products has lead us to design and offer flexible testing services that are unique in the market. Some examples of QA services that you might not know about include - [lightweight testing service for startups](https://qxf2.com/essential-service-offering), our [foundational testing service](https://qxf2.com/foundational-service-offering), fractional QA advisor role, [deep AI/ML testing](https://qxf2.com/aiml-testing-offering) and so much more. If this streaming data generator helped you, consider spreading the word about Qxf2 and give this repo a star. And if you want to hire us for some advanced, technical testing, simply drop an note to Arun (mak@qxf2.com).
